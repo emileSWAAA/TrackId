@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -26,4 +27,6 @@ public interface ITrackRepository
     Task<Track> UpdateAsync(Track entity, CancellationToken cancellationToken);
 
     Task<bool> ExistsAsync(Expression<Func<Track, bool>> predicate, CancellationToken cancellationToken);
+
+    Task<Track> AddArtistsAsync(Guid trackId, IEnumerable<Guid> artistIds, CancellationToken cancellationToken);
 }

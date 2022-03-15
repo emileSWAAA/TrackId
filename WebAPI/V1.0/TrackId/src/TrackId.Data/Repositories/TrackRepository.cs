@@ -162,9 +162,37 @@ namespace TrackId.Data.Repositories
                 .AnyAsync(predicate, cancellationToken);
         }
 
+        public async Task<Track> AddArtistsAsync(Guid trackId, IEnumerable<Guid> artistIds,
+            CancellationToken cancellationToken)
+        {
+            if (await GetByIdAsync(trackId, cancellationToken) is not Track existingTrack)
+            {
+                return null;
+            }
+
+            foreach (var artist in artistIds)
+            {
+                if (await _dbContext.ArtistTracks.AnyAsync(art =>
+                        art.TrackId.Equals(existingTrack.Id) && art.ArtistId.Equals(artist) && !art.IsDeleted,
+                        cancellationToken))
+                {
+                    continue;
+                }
+
+                await _dbContext.ArtistTracks.AddAsync(CreateArtistTrack(artist, existingTrack.Id), cancellationToken);
+            }
+
+            if (await _dbContext.SaveChangesAsync(cancellationToken) <= 0)
+            {
+                return null;
+            }
+
+            return existingTrack;
+        }
+
         private void UpdateArtists(Track track, IEnumerable<ArtistTrack> artists)
         {
-            foreach (var artist in artists)
+            foreach (var artist in track.Artists)
             {
                 if (!track.Artists.Any(art => art.ArtistId.Equals(artist.ArtistId) &&
                                               art.TrackId.Equals(track.Id)))
@@ -173,26 +201,31 @@ namespace TrackId.Data.Repositories
                 }
             }
 
-            foreach (var artist in track.Artists)
+            foreach (var artist in artists)
             {
-                var existingArtist = artists.SingleOrDefault(art => art.ArtistId.Equals(artist.ArtistId) &&
-                                                                    art.TrackId.Equals(track.Id));
+                var existingArtist = track.Artists.SingleOrDefault(art => art.ArtistId.Equals(artist.ArtistId) &&
+                                                                            art.TrackId.Equals(track.Id));
                 if (existingArtist is not null)
                 {
                     _dbContext.Entry(existingArtist).State = EntityState.Modified;
                     continue;
                 }
 
-                existingArtist = new ArtistTrack()
-                {
-                    ArtistId = artist.ArtistId,
-                    Id = Guid.NewGuid(),
-                    CreateDateTime = DateTime.UtcNow,
-                    TrackId = track.Id,
-                    IsDeleted = false
-                };
+                existingArtist = CreateArtistTrack(artist.ArtistId, track.Id);
                 _dbContext.Entry(existingArtist).State = EntityState.Added;
             }
+        }
+
+        private static ArtistTrack CreateArtistTrack(Guid artistId, Guid trackId)
+        {
+            return new ArtistTrack()
+            {
+                ArtistId = artistId,
+                Id = Guid.NewGuid(),
+                CreateDateTime = DateTime.UtcNow,
+                TrackId = trackId,
+                IsDeleted = false
+            };
         }
     }
 }

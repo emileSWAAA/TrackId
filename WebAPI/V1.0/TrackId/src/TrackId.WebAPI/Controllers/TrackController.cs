@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -6,11 +7,14 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TrackId.Application.Commands.Track.AddArtists;
 using TrackId.Application.Commands.Track.Delete;
 using TrackId.Application.Commands.Track.Post;
 using TrackId.Application.Commands.Track.Put;
+using TrackId.Application.Queries;
 using TrackId.Application.Queries.Track;
 using TrackId.Contracts.Track;
+using TrackId.Contracts.Track.AddArtist;
 using TrackId.Data.Wrappers;
 
 namespace TrackId.WebAPI.Controllers
@@ -155,6 +159,41 @@ namespace TrackId.WebAPI.Controllers
                 {
                     Id = id
                 }, cancellationToken);
+
+                if (!result.Success)
+                {
+                    return BadRequest(result.Errors);
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred.");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut("{id:guid}/artist")]
+        public async Task<IActionResult> AddArtists([FromRoute] Guid id, [FromBody] AddArtistsRequest request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _mediator.Send(new AddArtistsCommand()
+                {
+                    Artists = request.Artists,
+                    TrackId = id,
+                }, cancellationToken);
+
+                if (result is null)
+                {
+                    return NotFound();
+                }
+
+                if (!result.Success && result.Errors.Any(err => err.Type == RequestErrorType.NotFound))
+                {
+                    return NotFound();
+                }
 
                 if (!result.Success)
                 {

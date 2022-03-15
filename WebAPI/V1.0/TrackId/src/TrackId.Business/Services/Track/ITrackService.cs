@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TrackId.Business.Dto;
@@ -17,4 +18,6 @@ public interface ITrackService
     Task<TrackDto> UpdateAsync(TrackDto track, CancellationToken cancellationToken);
 
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
+
+    Task<TrackDto> AddArtistsAsync(Guid trackId, IEnumerable<Guid> artistIds, CancellationToken cancellationToken);
 }

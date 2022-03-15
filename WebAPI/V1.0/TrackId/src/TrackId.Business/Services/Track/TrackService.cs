@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -114,6 +115,16 @@ namespace TrackId.Business.Services
 
             await _trackRepository.SoftDeleteAsync(id, cancellationToken);
             return true;
+        }
+
+        public async Task<TrackDto> AddArtistsAsync(Guid trackId, IEnumerable<Guid> artistIds, CancellationToken cancellationToken)
+        {
+            if (await _trackRepository.AddArtistsAsync(trackId, artistIds, cancellationToken) is not Track track)
+            {
+                return null;
+            }
+
+            return _mapper.Map<TrackDto>(track);
         }
     }
 }

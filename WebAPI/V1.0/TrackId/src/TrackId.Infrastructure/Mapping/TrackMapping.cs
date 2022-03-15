@@ -4,6 +4,7 @@ using TrackId.Application.Commands.Track.Post;
 using TrackId.Application.Commands.Track.Put;
 using TrackId.Business.Dto;
 using TrackId.Contracts.Track;
+using TrackId.Contracts.Track.AddArtist;
 using TrackId.Data.Entities;
 using TrackId.Data.Wrappers;
 
@@ -34,6 +35,10 @@ namespace TrackId.Infrastructure.Mapping
 
             CreateMap<TrackDto, PutTrackResponse>()
                 .ForMember(dest => dest.Artists, opt => opt.MapFrom(src => src.Artists.Select(art => art)));
+
+            CreateMap<TrackDto, AddArtistsResponse>()
+                .ForMember(dest => dest.TrackId, opt => opt.MapFrom(src => src.Id));
+
 
             CreateMap<PaginatedList<Track>, PaginatedList<TrackDto>>()
                 .ForCtorParam("items", opt => opt.MapFrom(src => src.Items))
