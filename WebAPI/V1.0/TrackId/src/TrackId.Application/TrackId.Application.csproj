@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Queries\" />
+    <None Remove="Commands\" />
+    <None Remove="Queries\Track\" />
+    <None Remove="MediatR.Extensions.Microsoft.DependencyInjection" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TrackId.Contracts\TrackId.Contracts.csproj" />
+    <ProjectReference Include="..\TrackId.Business\TrackId.Business.csproj" />
+  </ItemGroup>
+</Project>
