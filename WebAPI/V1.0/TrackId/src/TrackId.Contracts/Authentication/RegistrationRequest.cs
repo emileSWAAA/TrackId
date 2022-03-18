@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrackId.Contracts.Models.User
 {
-    public class RegistrationRequest
+    public class RegistrationRequest : IRequestContract
     {
         [PasswordPropertyText]
         public string Password { get; set; }

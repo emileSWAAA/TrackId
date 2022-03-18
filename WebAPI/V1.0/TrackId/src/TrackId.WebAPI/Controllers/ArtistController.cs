@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using TrackId.Application.Commands.Artist.Delete;
 using TrackId.Application.Commands.Artist.Post;
 using TrackId.Application.Commands.Artist.Put;
-using TrackId.Application.Commands.Track.Put;
 using TrackId.Application.Queries.Artist.Get;
 using TrackId.Application.Queries.Artist.GetById;
 using TrackId.Contracts.Artist;

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using TrackId.Application.Queries;
 using TrackId.Business.Dto;
 using TrackId.Business.Services;

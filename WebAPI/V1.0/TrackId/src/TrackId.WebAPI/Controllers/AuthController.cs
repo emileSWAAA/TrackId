@@ -1,11 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TrackId.Application.Commands.Auth.Register;
 using TrackId.Business.Dto;
 using TrackId.Business.Interfaces;
 using TrackId.Common.Constants;
@@ -22,16 +25,18 @@ namespace TrackId.WebAPI.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<AuthController> _logger;
         private readonly IJwtTokenHelper _jwtTokenHelper;
+        private readonly IMediator _mediator;
 
         public AuthController(IMapper mapper, ILogger<AuthController> logger,
             IJwtTokenHelper jwtTokenHelper, SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, IMediator mediator)
             : base(mapper)
         {
             _logger = logger;
             _jwtTokenHelper = jwtTokenHelper;
             _signInManager = signInManager;
             _userManager = userManager;
+            _mediator = mediator;
         }
 
         [HttpPost("login")]
@@ -83,45 +88,30 @@ namespace TrackId.WebAPI.Controllers
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Register([FromBody] RegistrationRequest request)
+        public async Task<ActionResult> Register([FromBody] RegistrationRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                if (!request.Password.Equals(request.ConfirmPassword, StringComparison.InvariantCulture))
+                var result = await _mediator.Send(new RegisterCommand()
                 {
-                    ModelState.AddModelError("passwordMatch", ErrorConstants.Auth_PasswordsDoNotMatch);
-                    return BadRequest(ModelState);
+                    Password = request.Password,
+                    ConfirmPassword = request.ConfirmPassword,
+                    Email = request.Email,
+                    Username = request.Email
+                }, cancellationToken);
+
+                if (result == null)
+                {
+                    return BadRequest(ErrorConstants.GeneralError);
                 }
 
-                var user = Mapper.Map<ApplicationUser>(request);
-                if (user is null)
+                if (!result.Success)
                 {
-                    _logger.LogWarning("Could not map user from request to DTO.");
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(result.Errors);
                 }
 
-                if (await _userManager.FindByEmailAsync(request.Email) is not null)
-                {
-                    ModelState.AddModelError("userExists", ErrorConstants.Auth_UserAlreadyExists);
-                    return BadRequest(ModelState);
-                }
-
-                var registrationResult = await _userManager.CreateAsync(user, request.Password);
-                if (!registrationResult.Succeeded)
-                {
-                    foreach (var error in registrationResult.Errors)
-                    {
-                        ModelState.AddModelError(error.Code, error.Description);
-                    }
-
-                    return BadRequest(ModelState);
-                }
-
-                await _userManager.AddToRoleAsync(user, RoleConstants.User);
-
-                return Ok(registrationResult);
+                return NoContent();
             }
             catch (Exception ex)
             {
