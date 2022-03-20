@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrackId.Contracts.Models.User
 {
-    public class AuthenticationRequest
+    public class LoginRequest : IRequestContract
     {
         [Required]
         [EmailAddress]
@@ -12,5 +12,7 @@ namespace TrackId.Contracts.Models.User
         [Required]
         [PasswordPropertyText]
         public string Password { get; set; }
+
+        public bool RememberMe { get; set; }
     }
 }

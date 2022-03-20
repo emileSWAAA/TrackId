@@ -2,7 +2,7 @@
 
 namespace TrackId.Contracts.Models.User
 {
-    public class AuthenticationResponse
+    public class LoginResponse : IResponseContract
     {
         public Guid Id { get; set; }
 

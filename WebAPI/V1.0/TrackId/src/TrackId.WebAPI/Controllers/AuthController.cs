@@ -1,19 +1,18 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TrackId.Application.Commands.Auth.Login;
 using TrackId.Application.Commands.Auth.Register;
-using TrackId.Business.Dto;
-using TrackId.Business.Interfaces;
+using TrackId.Application.Queries;
 using TrackId.Common.Constants;
 using TrackId.Contracts.Models.User;
-using TrackId.Data.Entities;
 
 namespace TrackId.WebAPI.Controllers
 {
@@ -21,62 +20,50 @@ namespace TrackId.WebAPI.Controllers
     [ApiController]
     public class AuthController : BaseApiController
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<AuthController> _logger;
-        private readonly IJwtTokenHelper _jwtTokenHelper;
         private readonly IMediator _mediator;
 
-        public AuthController(IMapper mapper, ILogger<AuthController> logger,
-            IJwtTokenHelper jwtTokenHelper, SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager, IMediator mediator)
+        public AuthController(IMapper mapper,
+            ILogger<AuthController> logger,
+            IMediator mediator)
             : base(mapper)
         {
             _logger = logger;
-            _jwtTokenHelper = jwtTokenHelper;
-            _signInManager = signInManager;
-            _userManager = userManager;
             _mediator = mediator;
         }
 
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<AuthenticationResponse>> Login([FromBody] AuthenticationRequest request)
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                if (request == null || string.IsNullOrWhiteSpace(request.Email)
-                                    || string.IsNullOrWhiteSpace(request.Password))
+                if (request == null)
                 {
                     return BadRequest();
                 }
 
-                var user = await _userManager.FindByEmailAsync(request.Email);
-                if (user is null)
+                var result = await _mediator.Send(new LoginCommand()
                 {
-                    return NotFound();
-                }
+                    Email = request.Email,
+                    Password = request.Password,
+                    RememberMe = request.RememberMe
+                }, cancellationToken);
 
-                var authResult = await _signInManager.PasswordSignInAsync(user, request.Password, isPersistent: false, lockoutOnFailure: false);
-                if (authResult is null || authResult.IsNotAllowed || authResult.IsLockedOut || !authResult.Succeeded)
+                if (result.Errors.Any(err => err.Type.Equals(RequestErrorType.Unauthorized)))
                 {
                     return Unauthorized();
                 }
 
-                var userDto = Mapper.Map<UserDto>(user);
-                if (userDto is null)
+                if (!result.Success)
                 {
-                    _logger.LogWarning($"Mapping of userId '{user.Id}' failed to map.");
-                    return BadRequest();
+                    return BadRequest(result.Errors);
                 }
 
-                var response = Mapper.Map<AuthenticationResponse>(userDto);
-                response.Token = await _jwtTokenHelper.CreateToken(userDto);
-
-                return response;
+                return Ok(result.Result);
             }
             catch (Exception ex)
             {

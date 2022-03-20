@@ -17,17 +17,14 @@ namespace TrackId.Application.Commands.Auth.Register
     {
         private readonly IMapper _mapper;
         private readonly ILogger<RegisterCommandHandler> _logger;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public RegisterCommandHandler(IMapper mapper,
             ILogger<RegisterCommandHandler> logger,
-            SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager)
         {
             _mapper = mapper;
             _logger = logger;
-            _signInManager = signInManager;
             _userManager = userManager;
         }
 
