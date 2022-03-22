@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrackId.Data;
 
 namespace TrackId.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220321103125_Genre001")]
+    partial class Genre001
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,14 +237,14 @@ namespace TrackId.Data.Migrations
                         {
                             Id = new Guid("8a24bfa9-26fe-4bd1-9d84-ab2a83d6f2fb"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0611ee3e-e828-4584-97e9-cc8686998ef5",
-                            CreateDateTime = new DateTime(2022, 3, 21, 10, 36, 36, 841, DateTimeKind.Utc).AddTicks(5962),
+                            ConcurrencyStamp = "92718187-f81e-4ca8-b97b-b7da4437efc1",
+                            CreateDateTime = new DateTime(2022, 3, 21, 10, 31, 25, 10, DateTimeKind.Utc).AddTicks(2579),
                             Email = "emileverbunt@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "emileverbunt@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJP3AuZc2VpHVOe63AaBEt2ATy66DoVNw773mTW29v4N+cFx5RbGEKgm7kfMdD/u3w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELhDMi4sIlnBJ+oMFx5ThF4nCBTJAh3nVfi8bW8i6RlXi3k+1T7W4k7NELyu+e0c2g==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "Admin"
@@ -278,7 +280,7 @@ namespace TrackId.Data.Migrations
                         new
                         {
                             Id = new Guid("69532b21-3b21-4a16-9a13-efe69f109cca"),
-                            CreateDateTime = new DateTime(2022, 3, 21, 10, 36, 36, 858, DateTimeKind.Utc).AddTicks(2270),
+                            CreateDateTime = new DateTime(2022, 3, 21, 10, 31, 25, 27, DateTimeKind.Utc).AddTicks(6881),
                             IsDeleted = false,
                             IsValidated = false,
                             Name = "TBA"
@@ -348,34 +350,6 @@ namespace TrackId.Data.Migrations
                     b.HasIndex("ParentGenreId");
 
                     b.ToTable("Genres");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("2443687e-b3e6-49aa-87ec-4ad9e7eae6bd"),
-                            CreateDateTime = new DateTime(2022, 3, 21, 10, 36, 36, 858, DateTimeKind.Utc).AddTicks(7766),
-                            Description = "Hardstyle",
-                            IsDeleted = false,
-                            Name = "Hardstyle",
-                            ParentGenreId = new Guid("1af4af53-05a4-4934-b8b1-758d9750f8d9")
-                        },
-                        new
-                        {
-                            Id = new Guid("fac53697-439f-48fd-9050-832a981adf2c"),
-                            CreateDateTime = new DateTime(2022, 3, 21, 10, 36, 36, 858, DateTimeKind.Utc).AddTicks(8055),
-                            Description = "Hardstyle",
-                            IsDeleted = false,
-                            Name = "Raw hardstyle",
-                            ParentGenreId = new Guid("2443687e-b3e6-49aa-87ec-4ad9e7eae6bd")
-                        },
-                        new
-                        {
-                            Id = new Guid("1af4af53-05a4-4934-b8b1-758d9750f8d9"),
-                            CreateDateTime = new DateTime(2022, 3, 21, 10, 36, 36, 858, DateTimeKind.Utc).AddTicks(8057),
-                            Description = "Electronic dance music",
-                            IsDeleted = false,
-                            Name = "EDM"
-                        });
                 });
 
             modelBuilder.Entity("TrackId.Data.Entities.Track", b =>
@@ -419,21 +393,21 @@ namespace TrackId.Data.Migrations
                         new
                         {
                             Id = new Guid("b3e78bd1-5fa8-4dd9-ac80-19063dbc82e1"),
-                            ConcurrencyStamp = "2b48b0b8-b64a-4ef6-be81-6628841f819f",
+                            ConcurrencyStamp = "a950110d-14b9-48bd-a44c-2fc35ed297f5",
                             Name = "admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
                             Id = new Guid("bba64c5f-a693-4f88-96a3-7207018bc14e"),
-                            ConcurrencyStamp = "aff79ed3-b8a2-4bdc-9b62-f69bcf432164",
+                            ConcurrencyStamp = "2222cad4-1758-4a0f-8ccf-4234544645fd",
                             Name = "user",
                             NormalizedName = "User"
                         },
                         new
                         {
                             Id = new Guid("f8dbb603-a0f4-4b38-a1d6-ccb370d58586"),
-                            ConcurrencyStamp = "59aa1bef-63c2-464e-a271-b6f7dbabc7fe",
+                            ConcurrencyStamp = "88975938-3cd3-4940-8895-5f95ff5ca4dd",
                             Name = "artist",
                             NormalizedName = "Artist"
                         });

@@ -46,7 +46,7 @@ namespace TrackId.WebAPI.Controllers
                     return BadRequest();
                 }
 
-                var result = await _mediator.Send(new LoginCommand()
+                var result = await _mediator.Send(new LoginCommand
                 {
                     Email = request.Email,
                     Password = request.Password,
@@ -80,7 +80,7 @@ namespace TrackId.WebAPI.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new RegisterCommand()
+                var result = await _mediator.Send(new RegisterCommand
                 {
                     Password = request.Password,
                     ConfirmPassword = request.ConfirmPassword,

@@ -11,6 +11,10 @@ namespace TrackId.Data.Entities
 
         public TrackType Type { get; set; }
 
+        public Guid? GenreId { get; set; }
+
+        public Genre Genre { get; set; }
+
         public DateTime CreateDateTime { get; set; }
 
         public bool IsDeleted { get; set; }

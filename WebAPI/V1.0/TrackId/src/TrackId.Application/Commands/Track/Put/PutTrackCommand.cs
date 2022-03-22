@@ -14,5 +14,7 @@ namespace TrackId.Application.Commands.Track.Put
         public TrackType Type { get; set; }
 
         public IEnumerable<Guid> Artists { get; set; }
+
+        public Guid? GenreId { get; set; }
     }
 }

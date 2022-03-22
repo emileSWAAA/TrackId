@@ -1,9 +1,18 @@
-﻿using TrackId.Data.Wrappers;
+﻿using System.Collections.Generic;
+using TrackId.Contracts.Track;
+using TrackId.Data.Wrappers;
 
 namespace TrackId.Contracts.Artist.GetPaginated
 {
-    public record GetArtistPaginatedResponse : IResponseContract
+    public class GetArtistPaginatedResponse : IResponseContract
     {
-        public PaginatedList<ArtistViewModel> Result { get; set; }
+        public PaginatedList<ArtistResult> Result { get; set; }
+    }
+
+    public class ArtistResult
+    {
+        public ArtistViewModel Artist { get; set; }
+
+        public IEnumerable<TrackViewModel> Tracks { get; set; }
     }
 }

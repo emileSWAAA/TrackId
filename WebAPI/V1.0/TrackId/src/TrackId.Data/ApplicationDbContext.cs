@@ -18,6 +18,8 @@ namespace TrackId.Data
 
         public virtual DbSet<ArtistTrack> ArtistTracks { get; set; }
 
+        public virtual DbSet<Genre> Genres { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +29,7 @@ namespace TrackId.Data
             SeedUsers(modelBuilder);
             SeedUserRoles(modelBuilder);
             SeedTbaArtist(modelBuilder);
+            SeedGenres(modelBuilder);
 
             modelBuilder.Entity<ArtistTrack>()
                 .HasOne(x => x.Artist)
@@ -68,7 +71,7 @@ namespace TrackId.Data
             modelBuilder.Entity<ApplicationUser>().HasData(user);
         }
 
-        private void SeedRoles(ModelBuilder modelBuilder)
+        private static void SeedRoles(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Role>().HasData(
                 new Role() { Id = Guid.Parse("B3E78BD1-5FA8-4DD9-AC80-19063DBC82E1"), Name = "admin", NormalizedName = "Admin" },
@@ -77,7 +80,7 @@ namespace TrackId.Data
             );
         }
 
-        private void SeedUserRoles(ModelBuilder modelBuilder)
+        private static void SeedUserRoles(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserRole>()
                 .HasData(new UserRole()
@@ -87,7 +90,7 @@ namespace TrackId.Data
                 });
         }
 
-        private void SeedTbaArtist(ModelBuilder modelBuilder)
+        private static void SeedTbaArtist(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Artist>()
                 .HasData(new Artist()
@@ -96,6 +99,34 @@ namespace TrackId.Data
                     Name = ArtistConstants.TbaName,
                     CreateDateTime = DateTime.UtcNow,
                     IsDeleted = false,
+                });
+        }
+
+        private static void SeedGenres(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Genre>()
+                .HasData(new Genre[]
+                {
+                    new Genre() {
+                        Name = "Hardstyle",
+                        Id = Guid.Parse("2443687E-B3E6-49AA-87EC-4AD9E7EAE6BD"),
+                        ParentGenreId = Guid.Parse("1AF4AF53-05A4-4934-B8B1-758D9750F8D9"),
+                        Description = "Hardstyle",
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    new Genre() {
+                        Name = "Raw hardstyle",
+                        Id = Guid.Parse("FAC53697-439F-48FD-9050-832A981ADF2C"),
+                        ParentGenreId = Guid.Parse("2443687E-B3E6-49AA-87EC-4AD9E7EAE6BD"),
+                        Description = "Hardstyle",
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    new Genre() {
+                        Name = "EDM",
+                        Id = Guid.Parse("1AF4AF53-05A4-4934-B8B1-758D9750F8D9"),
+                        Description = "Electronic dance music",
+                        CreateDateTime = DateTime.UtcNow
+                    },
                 });
         }
     }

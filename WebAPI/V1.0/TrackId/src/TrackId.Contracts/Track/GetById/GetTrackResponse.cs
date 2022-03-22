@@ -10,6 +10,8 @@ namespace TrackId.Contracts.Track
 
         public string Title { get; set; }
 
-        public IEnumerable<Guid> Artists { get; set; }
+        public IEnumerable<ArtistViewModel> Artists { get; set; }
+
+        public Guid? GenreId { get; set; }
     }
 }

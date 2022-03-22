@@ -37,7 +37,7 @@ namespace TrackId.Application.Queries.Track
 
             var response = new GetTrackPaginatedResponse()
             {
-                Result = _mapper.Map<PaginatedList<TrackViewModel>>(pagedList)
+                Result = _mapper.Map<PaginatedList<TrackResult>>(pagedList)
             };
 
             return new GetTrackQueryResult(response);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TrackId.Common.Enum;
+using TrackId.Data.Entities;
 
 namespace TrackId.Business.Dto
 {
@@ -10,6 +11,8 @@ namespace TrackId.Business.Dto
 
         public TrackType Type { get; set; }
 
-        public IEnumerable<Guid> Artists { get; set; } = new List<Guid>();
+        public IEnumerable<ArtistDto> Artists { get; set; }
+
+        public Guid? GenreId { get; set; }
     }
 }

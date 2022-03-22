@@ -43,7 +43,7 @@ namespace TrackId.Application.Queries.Artist.Get
 
             var response = new GetArtistPaginatedResponse()
             {
-                Result = _mapper.Map<PaginatedList<ArtistViewModel>>(pagedList)
+                Result = _mapper.Map<PaginatedList<ArtistResult>>(pagedList)
             };
 
             return new GetArtistQueryResult(response);

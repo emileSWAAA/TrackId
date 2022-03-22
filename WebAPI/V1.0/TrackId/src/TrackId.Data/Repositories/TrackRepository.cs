@@ -40,6 +40,9 @@ namespace TrackId.Data.Repositories
             }
 
             var query = _dbContext.Tracks
+                .Include(tr => tr.Artists)
+                .ThenInclude(art => art.Artist)
+                .Include(tr => tr.Genre)
                 .AsNoTracking()
                 .Where(tr => tr.IsDeleted == false)
                 .AsQueryable();
@@ -109,6 +112,7 @@ namespace TrackId.Data.Repositories
             return await _dbContext.Tracks
                 .Include(tr => tr.Artists)
                 .ThenInclude(art => art.Artist)
+                .Include(tr => tr.Genre)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
         }
