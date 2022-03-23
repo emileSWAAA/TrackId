@@ -1,14 +1,30 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using TrackId.Application.Queries;
 using TrackId.Business.Dto;
 using TrackId.Business.Services;
+using TrackId.Common.Enum;
 using TrackId.Contracts.Track;
 
 namespace TrackId.Application.Commands.Track.Put
 {
+    public class PutTrackCommand : IRequest<PutTrackCommandResult>
+    {
+        public Guid Id { get; set; }
+
+        public string Title { get; set; }
+
+        public TrackType Type { get; set; }
+
+        public IEnumerable<Guid> Artists { get; set; }
+
+        public Guid? GenreId { get; set; }
+    }
+
     public class PutTrackCommandHandler : IRequestHandler<PutTrackCommand, PutTrackCommandResult>
     {
         private readonly ITrackService _trackService;
@@ -37,6 +53,21 @@ namespace TrackId.Application.Commands.Track.Put
             }
 
             return new PutTrackCommandResult(_mapper.Map<PutTrackResponse>(result));
+        }
+    }
+
+    public class PutTrackCommandResult : BaseQueryResponse<PutTrackResponse>
+    {
+        public PutTrackCommandResult(PutTrackResponse result) : base(result)
+        {
+        }
+
+        public PutTrackCommandResult(RequestErrorType errorType, string errorMessage) : base(errorType, errorMessage)
+        {
+        }
+
+        public PutTrackCommandResult(bool success, RequestErrorType errorType, string errorMessage) : base(success, errorType, errorMessage)
+        {
         }
     }
 }

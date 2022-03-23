@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TrackId.Common.Interfaces;
 
@@ -23,5 +25,7 @@ namespace TrackId.Data.Entities
         public bool IsDeleted { get; set; }
 
         public DateTime? DeleteDateTime { get; set; }
+
+        public ICollection<Track> Tracks { get; set; }
     }
 }

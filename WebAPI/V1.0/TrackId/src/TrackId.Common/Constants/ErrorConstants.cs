@@ -11,6 +11,12 @@
             public const string UserDoesNotExist = "User does not exist.";
         }
 
+        public static class Genre
+        {
+            public const string InvalidParameters = "Invalid parameters.";
+            public const string NoGenresFound = "No genres found.";
+        }
+
         public const string GeneralError = "Unknown error occurred.";
     }
 }

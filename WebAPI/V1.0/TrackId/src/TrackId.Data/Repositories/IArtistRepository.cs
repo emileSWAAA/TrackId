@@ -16,7 +16,7 @@ public interface IArtistRepository
 
     Task<Artist> AddAsync(Artist entity, CancellationToken cancellationToken);
 
-    Task<Artist> SoftDeleteAsync(Guid id, CancellationToken cancellationToken);
+    Task<bool> SoftDeleteAsync(Guid id, CancellationToken cancellationToken);
 
     Task<Artist> UpdateAsync(Artist entity, CancellationToken cancellationToken);
 
@@ -24,7 +24,8 @@ public interface IArtistRepository
 
     Task<bool> ExistsAsync(Expression<Func<Artist, bool>> predicate, CancellationToken cancellationToken);
 
-    Task<IPaginatedList<Artist>> GetPaginatedListByConditionAsync(Expression<Func<Artist, bool>> predicate = null,
+    Task<IPaginatedList<Artist>> GetPaginatedListByConditionAsync(
+        Expression<Func<Artist, bool>> predicate = null,
         Func<IQueryable<Artist>, IOrderedQueryable<Artist>> orderBy = null,
         int pageIndex = 0,
         int pageSize = 20);

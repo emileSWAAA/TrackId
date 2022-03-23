@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TrackId.Common.Constants;
+using TrackId.Common.Helpers;
 using TrackId.Data.Entities;
 using TrackId.Data.Interfaces;
 using TrackId.Data.Wrappers;
@@ -51,7 +52,7 @@ namespace TrackId.Data.Repositories
             var entity = await GetByIdAsync(id, cancellationToken);
             if (entity is null)
             {
-                throw new InvalidOperationException($"Object with Id: '{id}' not found in database. Cannot delete.");
+                throw new InvalidOperationException($"Artist with Id: '{id}' not found in database. Cannot delete.");
             }
 
             _dbContext.Artists.Remove(entity);
@@ -78,7 +79,7 @@ namespace TrackId.Data.Repositories
             return null;
         }
 
-        public async Task<Artist> SoftDeleteAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<bool> SoftDeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             if (id.Equals(ArtistConstants.TbaGuid))
             {
@@ -88,17 +89,22 @@ namespace TrackId.Data.Repositories
             var entity = await GetByIdAsync(id, cancellationToken);
             if (entity == null)
             {
-                return null;
+                return false;
             }
 
             entity.IsDeleted = true;
             entity.DeleteDateTime = _dateTimeProvider.UtcNow;
 
-            return await UpdateAsync(entity, cancellationToken);
+            return await UpdateAsync(entity, cancellationToken) != null;
         }
 
         public async Task<Artist> UpdateAsync(Artist entity, CancellationToken cancellationToken)
         {
+            if (entity is null)
+            {
+                return null;
+            }
+
             if (entity.Id.Equals(ArtistConstants.TbaGuid))
             {
                 throw new ArgumentException("Can not update TBA artist", nameof(entity));
@@ -128,6 +134,8 @@ namespace TrackId.Data.Repositories
             }
 
             return await _dbContext.Artists
+                .Include(art => art.Tracks)
+                .ThenInclude(tr => tr.Track)
                 .AsNoTracking()
                 .AsQueryable()
                 .FirstOrDefaultAsync(predicate, cancellationToken);
@@ -146,10 +154,8 @@ namespace TrackId.Data.Repositories
             int pageIndex = 0,
             int pageSize = 20)
         {
-            if (pageSize > ApplicationConstants.MaxPageSize)
-            {
-                pageSize = ApplicationConstants.MaxPageSize;
-            }
+            pageSize = PaginatedListHelper.ParsePageSize(pageSize);
+            pageIndex = PaginatedListHelper.ParsePageIndex(pageIndex);
 
             var query = _dbContext.Artists
                 .Include(art => art.Tracks)
@@ -164,14 +170,14 @@ namespace TrackId.Data.Repositories
 
             var totalCount = await query
                 .AsNoTracking()
-                .CountAsync();
+                .CountAsync(art => !art.IsDeleted);
 
             if (orderBy != null)
             {
                 query = orderBy(query);
             }
 
-            var skip = (pageIndex) * pageSize;
+            var skip = PaginatedListHelper.ParseSkip(pageIndex, pageSize);
             if (skip < 0)
             {
                 skip = 0;
@@ -187,7 +193,7 @@ namespace TrackId.Data.Repositories
                 totalCount,
                 pageIndex,
                 pageSize,
-                await query.ToListAsync());
+                query);
         }
     }
 }

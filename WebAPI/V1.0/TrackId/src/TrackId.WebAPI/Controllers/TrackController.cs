@@ -24,27 +24,25 @@ namespace TrackId.WebAPI.Controllers
     public class TrackController : BaseApiController
     {
         private readonly ILogger<TrackController> _logger;
-        private readonly IMediator _mediator;
 
         public TrackController(
             IMapper mapper,
             ILogger<TrackController> logger,
             IMediator mediator)
-            : base(mapper)
+            : base(mapper, mediator)
         {
             _logger = logger;
-            _mediator = mediator;
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<GetByIdTrackResponse>> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<GetByIdTrackResponse>> GetById(Guid id)
         {
             try
             {
-                var result = await _mediator.Send(new GetByIdTrackRequestQuery()
+                var result = await Mediator.Send(new GetByIdTrackRequestQuery()
                 {
                     Id = id
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (!result.Success)
                 {
@@ -62,17 +60,16 @@ namespace TrackId.WebAPI.Controllers
 
         [HttpGet]
         public async Task<ActionResult<PaginatedList<GetByIdTrackResponse>>> GetPaginated(
-            CancellationToken cancellationToken,
-            int pageIndex = 0,
-            int pageSize = 20)
+            [FromQuery] int pageIndex = 0,
+            [FromQuery] int pageSize = 20)
         {
             try
             {
-                var result = await _mediator.Send(new GetTrackRequestQuery()
+                var result = await Mediator.Send(new GetTrackRequestQuery()
                 {
                     PageIndex = pageIndex,
                     PageSize = pageSize
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (!result.Success)
                 {
@@ -90,17 +87,16 @@ namespace TrackId.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PostTrackResponse>> Post([FromBody] PostTrackRequest request,
-            CancellationToken cancellationToken)
+        public async Task<ActionResult<PostTrackResponse>> Post([FromBody] PostTrackRequest request)
         {
             try
             {
-                var result = await _mediator.Send(new PostTrackCommand
+                var result = await Mediator.Send(new PostTrackCommand
                 {
                     Title = request.Title,
                     Type = request.Type,
                     Artists = request.Artists
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (!result.Success)
                 {
@@ -117,19 +113,17 @@ namespace TrackId.WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<PutTrackResponse>> Put([FromBody] PutTrackRequest request,
-            CancellationToken cancellationToken)
+        public async Task<ActionResult<PutTrackResponse>> Put([FromBody] PutTrackRequest request)
         {
             try
             {
-                var result = await _mediator.Send(new PutTrackCommand
+                var result = await Mediator.Send(new PutTrackCommand
                 {
                     Artists = request.Artists,
                     Id = request.Id,
                     Title = request.Title,
                     Type = request.TrackType
-                },
-                    cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (!result.Success)
                 {
@@ -146,7 +140,7 @@ namespace TrackId.WebAPI.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
@@ -155,10 +149,10 @@ namespace TrackId.WebAPI.Controllers
                     return NotFound();
                 }
 
-                var result = await _mediator.Send(new DeleteTrackCommand()
+                var result = await Mediator.Send(new DeleteTrackCommand()
                 {
                     Id = id
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (!result.Success)
                 {
@@ -175,15 +169,15 @@ namespace TrackId.WebAPI.Controllers
         }
 
         [HttpPut("{id:guid}/artist")]
-        public async Task<IActionResult> AddArtists([FromRoute] Guid id, [FromBody] AddArtistsRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddArtists([FromRoute] Guid id, [FromBody] AddArtistsRequest request)
         {
             try
             {
-                var result = await _mediator.Send(new AddArtistsCommand()
+                var result = await Mediator.Send(new AddArtistsCommand()
                 {
                     Artists = request.Artists,
                     TrackId = id,
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (result is null)
                 {

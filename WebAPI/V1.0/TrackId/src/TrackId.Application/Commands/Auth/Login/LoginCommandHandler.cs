@@ -13,6 +13,15 @@ using TrackId.Data.Entities;
 
 namespace TrackId.Application.Commands.Auth.Login
 {
+    public class LoginCommand : IRequest<LoginCommandResult>
+    {
+        public string Email { get; set; }
+
+        public string Password { get; set; }
+
+        public bool RememberMe { get; set; }
+    }
+
     public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCommandResult>
     {
         private readonly IMapper _mapper;
@@ -72,6 +81,24 @@ namespace TrackId.Application.Commands.Auth.Login
             response.Token = jwtToken;
 
             return new LoginCommandResult(response);
+        }
+    }
+
+    public class LoginCommandResult : BaseQueryResponse<LoginResponse>
+    {
+        public LoginCommandResult(LoginResponse result)
+            : base(result)
+        {
+        }
+
+        public LoginCommandResult(RequestErrorType errorType, string errorMessage)
+            : base(errorType, errorMessage)
+        {
+        }
+
+        public LoginCommandResult(bool success, RequestErrorType errorType, string errorMessage)
+            : base(success, errorType, errorMessage)
+        {
         }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using TrackId.Common.Interfaces;
 
 namespace TrackId.Business.Dto
 {
-    public class ArtistDto : BaseDto, IValidated
+    public class ArtistDto : BaseDto
     {
         public string Name { get; set; }
 

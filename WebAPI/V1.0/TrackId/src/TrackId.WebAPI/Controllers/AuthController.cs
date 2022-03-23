@@ -21,15 +21,13 @@ namespace TrackId.WebAPI.Controllers
     public class AuthController : BaseApiController
     {
         private readonly ILogger<AuthController> _logger;
-        private readonly IMediator _mediator;
 
-        public AuthController(IMapper mapper,
+        public AuthController(
+            IMapper mapper,
             ILogger<AuthController> logger,
-            IMediator mediator)
-            : base(mapper)
+            IMediator mediator) : base(mapper, mediator)
         {
             _logger = logger;
-            _mediator = mediator;
         }
 
         [HttpPost("login")]
@@ -37,7 +35,7 @@ namespace TrackId.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
         {
             try
             {
@@ -46,12 +44,12 @@ namespace TrackId.WebAPI.Controllers
                     return BadRequest();
                 }
 
-                var result = await _mediator.Send(new LoginCommand
+                var result = await Mediator.Send(new LoginCommand
                 {
                     Email = request.Email,
                     Password = request.Password,
                     RememberMe = request.RememberMe
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (result.Errors.Any(err => err.Type.Equals(RequestErrorType.Unauthorized)))
                 {
@@ -76,17 +74,17 @@ namespace TrackId.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Register([FromBody] RegistrationRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult> Register([FromBody] RegistrationRequest request)
         {
             try
             {
-                var result = await _mediator.Send(new RegisterCommand
+                var result = await Mediator.Send(new RegisterCommand
                 {
                     Password = request.Password,
                     ConfirmPassword = request.ConfirmPassword,
                     Email = request.Email,
                     Username = request.Email
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (result == null)
                 {

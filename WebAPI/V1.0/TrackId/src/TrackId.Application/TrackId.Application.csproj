@@ -9,7 +9,6 @@
     <None Remove="Commands\" />
     <None Remove="Queries\Track\" />
     <None Remove="MediatR.Extensions.Microsoft.DependencyInjection" />
-    <None Remove="Commands\Auth\Login\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
@@ -19,6 +18,7 @@
     <ProjectReference Include="..\TrackId.Business\TrackId.Business.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\Auth\Login\" />
+    <Folder Include="Queries\Genre\GetById\" />
+    <Folder Include="Queries\Genre\GetByIdWithTracks\" />
   </ItemGroup>
 </Project>

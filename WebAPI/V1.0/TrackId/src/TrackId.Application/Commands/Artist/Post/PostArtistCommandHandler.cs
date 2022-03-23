@@ -9,6 +9,11 @@ using TrackId.Contracts.Artist.Post;
 
 namespace TrackId.Application.Commands.Artist.Post
 {
+    public class PostArtistCommand : IRequest<PostArtistCommandResult>
+    {
+        public PostArtistRequest Request { get; set; }
+    }
+
     public class PostArtistCommandHandler : IRequestHandler<PostArtistCommand, PostArtistCommandResult>
     {
         private readonly IArtistService _artistService;
@@ -37,6 +42,21 @@ namespace TrackId.Application.Commands.Artist.Post
             }
 
             return new PostArtistCommandResult(_mapper.Map<PostArtistResponse>(result));
+        }
+    }
+
+    public class PostArtistCommandResult : BaseQueryResponse<PostArtistResponse>
+    {
+        public PostArtistCommandResult(PostArtistResponse result) : base(result)
+        {
+        }
+
+        public PostArtistCommandResult(RequestErrorType errorType, string errorMessage) : base(errorType, errorMessage)
+        {
+        }
+
+        public PostArtistCommandResult(bool success, RequestErrorType errorType, string errorMessage) : base(success, errorType, errorMessage)
+        {
         }
     }
 }

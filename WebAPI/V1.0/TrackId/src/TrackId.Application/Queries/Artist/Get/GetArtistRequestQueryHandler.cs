@@ -6,12 +6,18 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using TrackId.Business.Services;
 using TrackId.Common.Constants;
-using TrackId.Contracts.Artist;
 using TrackId.Contracts.Artist.GetPaginated;
 using TrackId.Data.Wrappers;
 
 namespace TrackId.Application.Queries.Artist.Get
 {
+    public class GetArtistRequestQuery : IRequest<GetArtistQueryResult>
+    {
+        public int PageSize { get; set; }
+
+        public int PageIndex { get; set; }
+    }
+
     public class GetArtistRequestQueryHandler : IRequestHandler<GetArtistRequestQuery, GetArtistQueryResult>
     {
         private readonly IMapper _mapper;
@@ -36,7 +42,7 @@ namespace TrackId.Application.Queries.Artist.Get
             }
 
             var pagedList = await _artistService.GetPagedListAsync(request.PageIndex, request.PageSize, cancellationToken);
-            if (pagedList is null || !pagedList.Items.Any())
+            if (pagedList is null || pagedList.TotalCount == 0)
             {
                 return new GetArtistQueryResult(RequestErrorType.NotFound, "No artists found.");
             }
@@ -47,6 +53,21 @@ namespace TrackId.Application.Queries.Artist.Get
             };
 
             return new GetArtistQueryResult(response);
+        }
+    }
+
+    public class GetArtistQueryResult : BaseQueryResponse<GetArtistPaginatedResponse>
+    {
+        public GetArtistQueryResult(GetArtistPaginatedResponse result) : base(result)
+        {
+        }
+
+        public GetArtistQueryResult(RequestErrorType errorType, string errorMessage) : base(errorType, errorMessage)
+        {
+        }
+
+        public GetArtistQueryResult(bool success, RequestErrorType errorType, string errorMessage) : base(success, errorType, errorMessage)
+        {
         }
     }
 }

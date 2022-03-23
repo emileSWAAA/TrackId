@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using TrackId.Business.Dto;
 using TrackId.Common.Constants;
 using TrackId.Data.Entities;
+using TrackId.Data.Interfaces;
 using TrackId.Data.Repositories;
 using TrackId.Data.Wrappers;
 
@@ -62,7 +63,7 @@ namespace TrackId.Business.Services
             return _mapper.Map<ArtistDto>(artist);
         }
 
-        public async Task<PaginatedList<ArtistDto>> GetPagedListAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
+        public async Task<IPaginatedList<ArtistDto>> GetPagedListAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
         {
             var artistList = await _artistRepository.GetPaginatedListByConditionAsync(null, x => x.OrderBy(o => o.CreateDateTime), pageIndex, pageSize);
             if (artistList is null)
@@ -82,6 +83,11 @@ namespace TrackId.Business.Services
             }
 
             var result = await _artistRepository.AddAsync(artistEnt, cancellationToken);
+            if (result is null)
+            {
+                return null;
+            }
+
             return _mapper.Map<ArtistDto>(result);
         }
 

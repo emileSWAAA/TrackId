@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TrackId.Common.Constants;
+using TrackId.Common.Helpers;
 using TrackId.Data.Entities;
 using TrackId.Data.Interfaces;
 using TrackId.Data.Wrappers;
@@ -34,10 +35,8 @@ namespace TrackId.Data.Repositories
             int pageIndex = 0,
             int pageSize = 20)
         {
-            if (pageSize > ApplicationConstants.MaxPageSize)
-            {
-                pageSize = ApplicationConstants.MaxPageSize;
-            }
+            pageSize = PaginatedListHelper.ParsePageSize(pageSize);
+            pageIndex = PaginatedListHelper.ParsePageIndex(pageIndex);
 
             var query = _dbContext.Tracks
                 .Include(tr => tr.Artists)
@@ -54,14 +53,14 @@ namespace TrackId.Data.Repositories
 
             var totalCount = await query
                 .AsNoTracking()
-                .CountAsync();
+                .CountAsync(track => !track.IsDeleted);
 
             if (orderBy != null)
             {
                 query = orderBy(query);
             }
 
-            var skip = (pageIndex) * pageSize;
+            var skip = PaginatedListHelper.ParseSkip(pageIndex, pageSize);
             if (skip < 0)
             {
                 skip = 0;
@@ -77,7 +76,7 @@ namespace TrackId.Data.Repositories
                 totalCount,
                 pageIndex,
                 pageSize,
-                await query.ToListAsync());
+                query);
         }
 
         public async Task<Track> AddAsync(Track entity, CancellationToken cancellationToken)

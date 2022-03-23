@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,21 @@ using TrackId.Data.Entities;
 
 namespace TrackId.Application.Commands.Auth.Register
 {
+    public class RegisterCommand : IRequest<RegisterCommandResult>
+    {
+        [Required]
+        public string Password { get; set; }
+
+        [Required]
+        public string ConfirmPassword { get; set; }
+
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        public string Username { get; set; }
+    }
+
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterCommandResult>
     {
         private readonly IMapper _mapper;
@@ -65,6 +81,21 @@ namespace TrackId.Application.Commands.Auth.Register
             await _userManager.AddToRoleAsync(user, RoleConstants.User);
 
             return new RegisterCommandResult(new RegistrationResponse());
+        }
+    }
+
+    public class RegisterCommandResult : BaseQueryResponse<RegistrationResponse>
+    {
+        public RegisterCommandResult(RegistrationResponse result) : base(result)
+        {
+        }
+
+        public RegisterCommandResult(RequestErrorType errorType, string errorMessage) : base(errorType, errorMessage)
+        {
+        }
+
+        public RegisterCommandResult(bool success, RequestErrorType errorType, string errorMessage) : base(success, errorType, errorMessage)
+        {
         }
     }
 }

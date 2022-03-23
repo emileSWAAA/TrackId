@@ -9,6 +9,13 @@ using TrackId.Data.Wrappers;
 
 namespace TrackId.Application.Queries.Track
 {
+    public class GetTrackRequestQuery : IRequest<GetTrackQueryResult>
+    {
+        public int PageSize { get; set; }
+
+        public int PageIndex { get; set; }
+    }
+
     public class GetTrackRequestQueryHandler : IRequestHandler<GetTrackRequestQuery, GetTrackQueryResult>
     {
         private readonly ITrackService _trackService;
@@ -42,5 +49,15 @@ namespace TrackId.Application.Queries.Track
 
             return new GetTrackQueryResult(response);
         }
+    }
+
+    public class GetTrackQueryResult : BaseQueryResponse<GetTrackPaginatedResponse>
+    {
+        public GetTrackQueryResult(GetTrackPaginatedResponse result) : base(result) { }
+
+        public GetTrackQueryResult(bool success, RequestErrorType errorType, string errorMessage)
+            : base(success, errorType, errorMessage) { }
+
+        public GetTrackQueryResult(RequestErrorType errorType, string errorMessage) : base(errorType, errorMessage) { }
     }
 }
