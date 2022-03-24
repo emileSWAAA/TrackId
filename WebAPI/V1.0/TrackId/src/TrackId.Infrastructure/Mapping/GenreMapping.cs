@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TrackId.Business.Dto.Genre;
 using TrackId.Contracts.Genre;
+using TrackId.Contracts.Genre.GetById;
 using TrackId.Data.Entities;
 using TrackId.Data.Wrappers;
 
@@ -22,6 +23,20 @@ namespace TrackId.Infrastructure.Mapping
                 .ForMember(dest => dest.Tracks, opt => opt.MapFrom(src => src.Tracks.Items));
 
             CreateMap<GenreViewModel, GenreDto>();
+            CreateMap<GenreDto, GetGenreByIdResponse>()
+                .ForMember(dest => dest.ParentGenre, opt => opt.MapFrom(src => new ParentGenreViewModel
+                {
+                    Id = src.ParentGenre.Id,
+                    Name = src.ParentGenre.Name
+                }));
+
+            CreateMap<GenreDto, GetGenreByIdWithTracksResponse>()
+                .ForMember(dest => dest.ParentGenre, opt => opt.MapFrom(src => new ParentGenreViewModel
+                {
+                    Id = src.ParentGenre.Id,
+                    Name = src.ParentGenre.Name
+                }))
+                .ForMember(dest => dest.Tracks, opt => opt.MapFrom(src => src.Tracks.Items));
 
             CreateMap<PaginatedList<Genre>, PaginatedList<GenreDto>>()
                 .ForCtorParam("items", opt => opt.MapFrom(src => src.Items))

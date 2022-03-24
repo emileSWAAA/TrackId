@@ -19,15 +19,15 @@ namespace TrackId.Application.Queries.Genre.GetPaginated
         public int PageIndex { get; set; }
     }
 
-    public class GetGenrePaginatedRequestQueryHandler : IRequestHandler<GetGenrePaginatedRequestQuery, GetGenrePaginatedQueryResult>
+    public class GetGenrePaginatedQueryHandler : IRequestHandler<GetGenrePaginatedRequestQuery, GetGenrePaginatedQueryResult>
     {
         private readonly IMapper _mapper;
-        private readonly ILogger<GetGenrePaginatedRequestQueryHandler> _logger;
+        private readonly ILogger<GetGenrePaginatedQueryHandler> _logger;
         private readonly IGenreService _genreService;
 
-        public GetGenrePaginatedRequestQueryHandler(
+        public GetGenrePaginatedQueryHandler(
             IGenreService genreService,
-            ILogger<GetGenrePaginatedRequestQueryHandler> logger,
+            ILogger<GetGenrePaginatedQueryHandler> logger,
             IMapper mapper)
         {
             _genreService = genreService;
@@ -56,7 +56,7 @@ namespace TrackId.Application.Queries.Genre.GetPaginated
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Something went wrong handling '{0}'", nameof(GetGenrePaginatedRequestQueryHandler));
+                _logger.LogError(ex, "Something went wrong handling '{0}'", nameof(GetGenrePaginatedQueryHandler));
                 return new GetGenrePaginatedQueryResult(RequestErrorType.Unknown, ErrorConstants.GeneralError);
             }
         }

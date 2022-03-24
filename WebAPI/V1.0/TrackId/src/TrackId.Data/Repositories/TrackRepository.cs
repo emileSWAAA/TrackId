@@ -5,8 +5,6 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TrackId.Common.Constants;
 using TrackId.Common.Helpers;
 using TrackId.Data.Entities;
 using TrackId.Data.Interfaces;
@@ -18,14 +16,11 @@ namespace TrackId.Data.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly ILogger<TrackRepository> _logger;
 
         public TrackRepository(ApplicationDbContext dbContext,
-            ILogger<TrackRepository> logger,
             IDateTimeProvider dateTimeProvider)
         {
             _dbContext = dbContext;
-            _logger = logger;
             _dateTimeProvider = dateTimeProvider;
         }
 
@@ -221,7 +216,7 @@ namespace TrackId.Data.Repositories
 
         private static ArtistTrack CreateArtistTrack(Guid artistId, Guid trackId)
         {
-            return new ArtistTrack()
+            return new ArtistTrack
             {
                 ArtistId = artistId,
                 Id = Guid.NewGuid(),

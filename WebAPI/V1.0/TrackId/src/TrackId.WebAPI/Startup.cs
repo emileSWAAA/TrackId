@@ -64,7 +64,7 @@ namespace TrackId.WebAPI
                 {
                     opts.RequireHttpsMetadata = false;
                     opts.SaveToken = true;
-                    opts.TokenValidationParameters = new TokenValidationParameters()
+                    opts.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
@@ -77,7 +77,7 @@ namespace TrackId.WebAPI
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo() { Title = "TrackId API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TrackId API", Version = "v1" });
             });
 
             // TODO: Specify CORS policy

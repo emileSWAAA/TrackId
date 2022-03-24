@@ -62,7 +62,8 @@ namespace TrackId.Infrastructure
             services.AddScoped<IJwtTokenHelper, JwtTokenHelper>(serviceProvider =>
                 new JwtTokenHelper(tokenOptions,
                     serviceProvider.GetRequiredService<UserManager<ApplicationUser>>(),
-                    serviceProvider.GetRequiredService<IMapper>()));
+                    serviceProvider.GetRequiredService<IMapper>(),
+                    serviceProvider.GetRequiredService<IDateTimeProvider>()));
 
             return services;
         }

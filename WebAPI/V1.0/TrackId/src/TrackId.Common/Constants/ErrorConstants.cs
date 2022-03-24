@@ -15,6 +15,9 @@
         {
             public const string InvalidParameters = "Invalid parameters.";
             public const string NoGenresFound = "No genres found.";
+            public const string NotFound = "Genre not found.";
+            public const string NotCreated = "Could not create genre.";
+            public const string NotDeleted = "Could not delete genre.";
         }
 
         public const string GeneralError = "Unknown error occurred.";

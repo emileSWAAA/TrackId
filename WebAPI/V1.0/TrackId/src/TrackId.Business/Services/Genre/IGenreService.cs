@@ -17,5 +17,11 @@ namespace TrackId.Business.Services
         Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
 
         Task<GenreDto> UpdateAsync(GenreDto genreDto, CancellationToken cancellationToken);
+
+        Task<GenreDto> GetGenreWithTracks(
+            Guid id,
+            int pageSize,
+            int pageIndex,
+            CancellationToken cancellationToken);
     }
 }

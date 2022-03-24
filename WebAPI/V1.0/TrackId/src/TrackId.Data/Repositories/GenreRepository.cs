@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TrackId.Common.Helpers;
 using TrackId.Data.Entities;
 using TrackId.Data.Interfaces;
@@ -15,16 +14,13 @@ namespace TrackId.Data.Repositories
     public class GenreRepository : IGenreRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly ILogger<GenreRepository> _logger;
         private readonly IDateTimeProvider _dateTimeProvider;
 
         public GenreRepository(
             ApplicationDbContext dbContext,
-            ILogger<GenreRepository> logger,
             IDateTimeProvider dateTimeProvider)
         {
             _dbContext = dbContext;
-            _logger = logger;
             _dateTimeProvider = dateTimeProvider;
         }
 

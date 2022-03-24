@@ -12,7 +12,8 @@ namespace TrackId.Application.Queries
                 Success = false;
                 if (Errors is null)
                 {
-                    Errors = new List<RequestError>() {
+                    Errors = new List<RequestError>
+                    {
                         new RequestError { ErrorMessage = "Not found", Type = RequestErrorType.NotFound } };
                 }
             }
@@ -31,7 +32,7 @@ namespace TrackId.Application.Queries
             {
                 if (Errors is null)
                 {
-                    Errors = new List<RequestError>() { new RequestError() { Type = errorType, ErrorMessage = errorMessage } };
+                    Errors = new List<RequestError> { new RequestError { Type = errorType, ErrorMessage = errorMessage } };
                 }
             }
         }
@@ -46,7 +47,7 @@ namespace TrackId.Application.Queries
         {
             if (Errors is null)
             {
-                Errors = new List<RequestError>() { new RequestError() { ErrorMessage = message, Type = type } };
+                Errors = new List<RequestError> { new RequestError { ErrorMessage = message, Type = type } };
             }
         }
     }

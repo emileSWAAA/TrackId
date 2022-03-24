@@ -18,7 +18,6 @@
     <ProjectReference Include="..\TrackId.Business\TrackId.Business.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Queries\Genre\GetById\" />
-    <Folder Include="Queries\Genre\GetByIdWithTracks\" />
+    <Folder Include="Commands\Genre\Put\" />
   </ItemGroup>
 </Project>

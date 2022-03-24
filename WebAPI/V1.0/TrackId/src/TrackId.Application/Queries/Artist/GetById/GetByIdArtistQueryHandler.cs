@@ -34,7 +34,6 @@ namespace TrackId.Application.Queries.Artist.GetById
         public async Task<GetByIdArtistQueryResult> Handle(GetByIdArtistQuery request, CancellationToken cancellationToken)
         {
             var id = request.Id;
-
             if (id.Equals(Guid.Empty))
             {
                 return new GetByIdArtistQueryResult(RequestErrorType.ValidationError, "Forbidden guid.");

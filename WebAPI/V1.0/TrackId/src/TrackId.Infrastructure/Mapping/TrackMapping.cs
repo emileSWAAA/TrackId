@@ -34,9 +34,14 @@ namespace TrackId.Infrastructure.Mapping
             CreateMap<TrackDto, PostTrackResponse>()
                 .ForMember(dest => dest.Artists, opt => opt.MapFrom(src => src.Artists.Select(art => art)));
 
-            CreateMap<PutTrackCommand, TrackDto>();
+            CreateMap<PutTrackCommand, TrackDto>()
+                .ForMember(dest => dest.Artists, opt => opt.MapFrom(src => src.Artists.Select(art => new ArtistDto()
+                {
+                    Id = art
+                })));
+
             CreateMap<TrackDto, PutTrackResponse>()
-                .ForMember(dest => dest.Artists, opt => opt.MapFrom(src => src.Artists.Select(art => art)));
+                .ForMember(dest => dest.Artists, opt => opt.MapFrom(src => src.Artists.Select(art => art.Id)));
 
             CreateMap<TrackDto, AddArtistsResponse>()
                 .ForMember(dest => dest.TrackId, opt => opt.MapFrom(src => src.Id));

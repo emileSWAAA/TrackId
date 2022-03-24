@@ -37,7 +37,7 @@ namespace TrackId.WebAPI.Controllers
         {
             try
             {
-                var result = await Mediator.Send(new GetByIdArtistQuery()
+                var result = await Mediator.Send(new GetByIdArtistQuery
                 {
                     Id = id
                 }, HttpContext.RequestAborted);
@@ -63,7 +63,7 @@ namespace TrackId.WebAPI.Controllers
         {
             try
             {
-                var result = await Mediator.Send(new GetArtistRequestQuery()
+                var result = await Mediator.Send(new GetArtistRequestQuery
                 {
                     PageIndex = pageIndex,
                     PageSize = pageSize
@@ -119,7 +119,7 @@ namespace TrackId.WebAPI.Controllers
                     return NotFound();
                 }
 
-                var result = await Mediator.Send(new DeleteArtistCommand()
+                var result = await Mediator.Send(new DeleteArtistCommand
                 {
                     Id = id
                 }, HttpContext.RequestAborted);

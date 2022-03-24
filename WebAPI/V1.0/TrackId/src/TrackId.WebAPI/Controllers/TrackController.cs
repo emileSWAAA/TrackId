@@ -39,7 +39,7 @@ namespace TrackId.WebAPI.Controllers
         {
             try
             {
-                var result = await Mediator.Send(new GetByIdTrackRequestQuery()
+                var result = await Mediator.Send(new GetByIdTrackRequestQuery
                 {
                     Id = id
                 }, HttpContext.RequestAborted);
@@ -65,7 +65,7 @@ namespace TrackId.WebAPI.Controllers
         {
             try
             {
-                var result = await Mediator.Send(new GetTrackRequestQuery()
+                var result = await Mediator.Send(new GetTrackRequestQuery
                 {
                     PageIndex = pageIndex,
                     PageSize = pageSize
@@ -122,7 +122,8 @@ namespace TrackId.WebAPI.Controllers
                     Artists = request.Artists,
                     Id = request.Id,
                     Title = request.Title,
-                    Type = request.TrackType
+                    Type = request.TrackType,
+                    GenreId = request.GenreId
                 }, HttpContext.RequestAborted);
 
                 if (!result.Success)
@@ -149,7 +150,7 @@ namespace TrackId.WebAPI.Controllers
                     return NotFound();
                 }
 
-                var result = await Mediator.Send(new DeleteTrackCommand()
+                var result = await Mediator.Send(new DeleteTrackCommand
                 {
                     Id = id
                 }, HttpContext.RequestAborted);
@@ -173,7 +174,7 @@ namespace TrackId.WebAPI.Controllers
         {
             try
             {
-                var result = await Mediator.Send(new AddArtistsCommand()
+                var result = await Mediator.Send(new AddArtistsCommand
                 {
                     Artists = request.Artists,
                     TrackId = id,

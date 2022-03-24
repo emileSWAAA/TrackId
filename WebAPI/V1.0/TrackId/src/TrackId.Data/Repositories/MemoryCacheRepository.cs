@@ -67,7 +67,7 @@ namespace TrackId.Data.Repositories
         public void Update<T>(string key, object data, CacheTimes minutesToCache = CacheTimes.HalfHour) where T : class
         {
             var item = Get<T>(key);
-            var policy = new MemoryCacheEntryOptions() { SlidingExpiration = TimeSpan.FromMinutes((int)minutesToCache) };
+            var policy = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes((int)minutesToCache) };
 
             if (item != null)
             {
@@ -115,7 +115,7 @@ namespace TrackId.Data.Repositories
 
         private void InternalSet<T>(string key, object data, CacheTimes minutesToCache = CacheTimes.HalfHour) where T : class
         {
-            var policy = new MemoryCacheEntryOptions() { SlidingExpiration = TimeSpan.FromMinutes((int)minutesToCache) };
+            var policy = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes((int)minutesToCache) };
             if (data != null && data is T)
             {
                 _cache.Set<T>(key, data as T, policy);

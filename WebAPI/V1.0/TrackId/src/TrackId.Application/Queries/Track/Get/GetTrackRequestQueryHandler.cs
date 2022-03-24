@@ -42,7 +42,7 @@ namespace TrackId.Application.Queries.Track
                 return new GetTrackQueryResult(RequestErrorType.NotFound, "No tracks found.");
             }
 
-            var response = new GetTrackPaginatedResponse()
+            var response = new GetTrackPaginatedResponse
             {
                 Result = _mapper.Map<PaginatedList<TrackResult>>(pagedList)
             };

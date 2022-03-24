@@ -11,6 +11,7 @@ using TrackId.Business.Dto;
 using TrackId.Business.Interfaces;
 using TrackId.Data;
 using TrackId.Data.Entities;
+using TrackId.Data.Interfaces;
 
 namespace TrackId.Business
 {
@@ -19,8 +20,13 @@ namespace TrackId.Business
         private readonly JwtTokenOptions _tokenOptions;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
-        public JwtTokenHelper(JwtTokenOptions tokenOptions, UserManager<ApplicationUser> userManager, IMapper mapper)
+        public JwtTokenHelper(
+            JwtTokenOptions tokenOptions,
+            UserManager<ApplicationUser> userManager,
+            IMapper mapper,
+            IDateTimeProvider dateTimeProvider)
         {
             if (tokenOptions == null)
             {
@@ -30,11 +36,12 @@ namespace TrackId.Business
             _tokenOptions = tokenOptions;
             _userManager = userManager;
             _mapper = mapper;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<string> CreateToken(UserDto user)
         {
-            var claims = new List<Claim>()
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
@@ -48,12 +55,12 @@ namespace TrackId.Business
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenOptions.Secret));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-            var tokenDescriptor = new SecurityTokenDescriptor()
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
                 Issuer = _tokenOptions.Issuer,
                 Audience = _tokenOptions.Audience,
-                Expires = DateTime.Now.AddMonths(1),
+                Expires = _dateTimeProvider.UtcNow.AddMonths(1),
                 SigningCredentials = credentials
             };
 

@@ -35,7 +35,6 @@ namespace TrackId.Data.Wrappers
 
         public int TotalCount { get; }
 
-        //TODO: check correct PageIndex
         public bool HasPreviousPage => PageIndex > 0;
 
         public bool HasNextPage => PageIndex < TotalPages - 1 && TotalPages > 1;

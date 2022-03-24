@@ -21,16 +21,13 @@ namespace TrackId.Application.Queries.Artist.Get
     public class GetArtistRequestQueryHandler : IRequestHandler<GetArtistRequestQuery, GetArtistQueryResult>
     {
         private readonly IMapper _mapper;
-        private readonly ILogger<GetArtistRequestQueryHandler> _logger;
         private readonly IArtistService _artistService;
 
         public GetArtistRequestQueryHandler(
             IMapper mapper,
-            ILogger<GetArtistRequestQueryHandler> logger,
             IArtistService artistService)
         {
             _mapper = mapper;
-            _logger = logger;
             _artistService = artistService;
         }
 
@@ -47,7 +44,7 @@ namespace TrackId.Application.Queries.Artist.Get
                 return new GetArtistQueryResult(RequestErrorType.NotFound, "No artists found.");
             }
 
-            var response = new GetArtistPaginatedResponse()
+            var response = new GetArtistPaginatedResponse
             {
                 Result = _mapper.Map<PaginatedList<ArtistResult>>(pagedList)
             };
