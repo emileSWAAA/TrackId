@@ -15,7 +15,10 @@ namespace TrackId.Infrastructure.Mapping
         public TrackMapping()
         {
             CreateMap<Track, TrackDto>()
-                .ForMember(dest => dest.Artists, opt => opt.MapFrom(src => src.Artists.Select(s => s.Artist)));
+                .ForMember(dest => dest.Artists, opt => opt.MapFrom(src => src.Artists.Select(s => new ArtistDto
+                {
+                    Id = s.ArtistId
+                })));
 
             CreateMap<TrackDto, Track>()
                 .ForMember(dest => dest.Artists, opt => opt.MapFrom(src => src.Artists.Select(s => new ArtistTrack

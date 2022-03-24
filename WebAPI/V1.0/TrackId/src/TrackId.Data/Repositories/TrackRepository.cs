@@ -192,8 +192,8 @@ namespace TrackId.Data.Repositories
         {
             foreach (var artist in track.Artists)
             {
-                if (!track.Artists.Any(art => art.ArtistId.Equals(artist.ArtistId) &&
-                                              art.TrackId.Equals(track.Id)))
+                if (!artists.Any(art => art.ArtistId.Equals(artist.ArtistId) &&
+                                        art.TrackId.Equals(track.Id)))
                 {
                     _dbContext.Entry(artist).State = EntityState.Deleted;
                 }
@@ -210,7 +210,8 @@ namespace TrackId.Data.Repositories
                 }
 
                 existingArtist = CreateArtistTrack(artist.ArtistId, track.Id);
-                _dbContext.Entry(existingArtist).State = EntityState.Added;
+                // _dbContext.Entry(existingArtist).State = EntityState.Added;
+                track.Artists.Add(existingArtist);
             }
         }
 
