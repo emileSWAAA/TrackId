@@ -13,13 +13,11 @@ namespace TrackId.Data
             : base(options) { }
 
         public virtual DbSet<Track> Tracks { get; set; }
-
         public virtual DbSet<Artist> Artists { get; set; }
-
         public virtual DbSet<ArtistTrack> ArtistTracks { get; set; }
-
         public virtual DbSet<Genre> Genres { get; set; }
-
+        public virtual DbSet<TrackSource> TrackSources { get; set; }
+        public virtual DbSet<TrackSourceType> TrackSourceTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +28,7 @@ namespace TrackId.Data
             SeedUserRoles(modelBuilder);
             SeedTbaArtist(modelBuilder);
             SeedGenres(modelBuilder);
+            BuildTrackSources(modelBuilder);
 
             modelBuilder.Entity<ArtistTrack>()
                 .HasOne(x => x.Artist)
@@ -50,6 +49,34 @@ namespace TrackId.Data
             {
                 b.Property(u => u.Id).HasDefaultValueSql("newsequentialid()");
             });
+        }
+
+        private static void BuildTrackSources(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TrackSource>().HasKey(ts => ts.Id);
+            modelBuilder.Entity<TrackSource>().Property(ts => ts.StreamSlug).IsRequired().HasMaxLength(155);
+            modelBuilder.Entity<TrackSource>().Property(ts => ts.IsBrokenLink).IsRequired();
+            modelBuilder.Entity<TrackSource>()
+                .HasOne(ts => ts.Track)
+                .WithMany(tr => tr.TrackSources)
+                .HasForeignKey(ts => ts.TrackId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TrackSource>()
+                .HasOne(ts => ts.TrackSourceType)
+                .WithOne()
+                .HasForeignKey<TrackSourceType>(tt => tt.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        private static void BuildTrackSourceTypes(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TrackSourceType>().HasKey(tt => tt.Id);
+            modelBuilder.Entity<TrackSourceType>().Property(tt => tt.EmbeddedUrl).IsRequired();
+            modelBuilder.Entity<TrackSourceType>().Property(tt => tt.Version)
+                .HasDefaultValue(ApplicationConstants.TrackSourceType.DefaultVersion).IsRequired();
+            modelBuilder.Entity<TrackSourceType>().Property(tt => tt.Name).IsRequired().HasMaxLength(75);
+
         }
 
         private static void SeedUsers(ModelBuilder modelBuilder)

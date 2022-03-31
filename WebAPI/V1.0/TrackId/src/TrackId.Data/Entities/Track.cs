@@ -21,6 +21,8 @@ namespace TrackId.Data.Entities
 
         public DateTime? DeleteDateTime { get; set; }
 
-        public virtual ICollection<ArtistTrack> Artists { get; set; }
+        public ICollection<ArtistTrack> Artists { get; set; }
+
+        public ICollection<TrackSource> TrackSources { get; set; }
     }
 }
