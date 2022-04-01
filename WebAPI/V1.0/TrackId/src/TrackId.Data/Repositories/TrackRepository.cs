@@ -210,18 +210,17 @@ namespace TrackId.Data.Repositories
                 }
 
                 existingArtist = CreateArtistTrack(artist.ArtistId, track.Id);
-                // _dbContext.Entry(existingArtist).State = EntityState.Added;
                 track.Artists.Add(existingArtist);
             }
         }
 
-        private static ArtistTrack CreateArtistTrack(Guid artistId, Guid trackId)
+        private ArtistTrack CreateArtistTrack(Guid artistId, Guid trackId)
         {
             return new ArtistTrack
             {
                 ArtistId = artistId,
                 Id = Guid.NewGuid(),
-                CreateDateTime = DateTime.UtcNow,
+                CreateDateTime = _dateTimeProvider.UtcNow,
                 TrackId = trackId,
                 IsDeleted = false
             };

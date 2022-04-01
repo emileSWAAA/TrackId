@@ -37,7 +37,7 @@ namespace TrackId.Data.Repositories
                 throw new ArgumentException("Can not add Genre with empty guid.", nameof(genre));
             }
 
-            genre.CreateDateTime = DateTime.UtcNow;
+            genre.CreateDateTime = _dateTimeProvider.UtcNow;
             genre.Id = Guid.NewGuid();
             genre.ParentGenre = null;
 

@@ -67,7 +67,7 @@ namespace TrackId.Data.Repositories
                 throw new ArgumentException("Can not add TBA artist", nameof(entity));
             }
 
-            entity.CreateDateTime = DateTime.UtcNow;
+            entity.CreateDateTime = _dateTimeProvider.UtcNow;
             entity.Id = Guid.NewGuid();
 
             var result = await _dbContext.Artists.AddAsync(entity, cancellationToken);
