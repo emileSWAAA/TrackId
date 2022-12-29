@@ -43,6 +43,7 @@ namespace TrackId.WebAPI
                 options.LowercaseQueryStrings = true;
                 options.LowercaseUrls = true;
             });
+
             services.AddIdentityCore<ApplicationUser>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
@@ -53,7 +54,6 @@ namespace TrackId.WebAPI
                 .AddUserStore<UserStore<ApplicationUser, Role, ApplicationDbContext, Guid>>()
                 .AddRoleStore<RoleStore<Role, ApplicationDbContext, Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
 
             var jwtOptions = appSettings.JwtTokenOptions;
             services

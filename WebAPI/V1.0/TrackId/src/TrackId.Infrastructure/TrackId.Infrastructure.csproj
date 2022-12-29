@@ -1,20 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\TrackId.Application\TrackId.Application.csproj" />
-    <ProjectReference Include="..\TrackId.Business\TrackId.Business.csproj" />
-    <ProjectReference Include="..\TrackId.Contracts\TrackId.Contracts.csproj" />
-    <ProjectReference Include="..\TrackId.Data\TrackId.Data.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\TrackId.Application\TrackId.Application.csproj" />
+		<ProjectReference Include="..\TrackId.Business\TrackId.Business.csproj" />
+		<ProjectReference Include="..\TrackId.Contracts\TrackId.Contracts.csproj" />
+		<ProjectReference Include="..\TrackId.Data\TrackId.Data.csproj" />
+	</ItemGroup>
 
 </Project>

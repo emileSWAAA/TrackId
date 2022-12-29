@@ -94,7 +94,7 @@ namespace TrackId.Business.Services
         public async Task<bool> ExistsAsync(ArtistDto artist, CancellationToken cancellationToken)
         {
             if (artist.Id.Equals(ArtistConstants.TbaGuid) ||
-                artist.Name.Equals(ArtistConstants.TbaName, StringComparison.OrdinalIgnoreCase))
+                artist.Name.Equals(ArtistConstants.Name.Tba, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }

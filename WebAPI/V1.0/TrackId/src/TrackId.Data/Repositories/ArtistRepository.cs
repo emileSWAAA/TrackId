@@ -62,7 +62,7 @@ namespace TrackId.Data.Repositories
         public async Task<Artist> AddAsync(Artist entity, CancellationToken cancellationToken)
         {
             if (entity.Id.Equals(ArtistConstants.TbaGuid) ||
-                entity.Name.Equals(ArtistConstants.TbaName, StringComparison.OrdinalIgnoreCase))
+                entity.Name.Equals(ArtistConstants.Name.Tba, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException("Can not add TBA artist", nameof(entity));
             }

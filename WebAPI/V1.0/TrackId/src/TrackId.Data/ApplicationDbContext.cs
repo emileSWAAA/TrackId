@@ -89,7 +89,8 @@ namespace TrackId.Data
                 LockoutEnabled = false,
                 NormalizedEmail = "emileverbunt@gmail.com",
                 NormalizedUserName = "admin",
-                CreateDateTime = DateTime.UtcNow
+                CreateDateTime = DateTime.UtcNow,
+                SecurityStamp = Guid.NewGuid().ToString()
             };
 
             var passwordHasher = new PasswordHasher<ApplicationUser>();
@@ -123,7 +124,7 @@ namespace TrackId.Data
                 .HasData(new Artist
                 {
                     Id = ArtistConstants.TbaGuid,
-                    Name = ArtistConstants.TbaName,
+                    Name = ArtistConstants.Name.Tba,
                     CreateDateTime = DateTime.UtcNow,
                     IsDeleted = false,
                 });
