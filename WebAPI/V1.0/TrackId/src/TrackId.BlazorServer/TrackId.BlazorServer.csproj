@@ -15,6 +15,10 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.1" />
+		<PackageReference Include="Blazorise.Bootstrap5" Version="1.1.5" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.1.5" />
+		<PackageReference Include="Blazorise.Components" Version="1.1.5" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -24,4 +28,14 @@
 		<ProjectReference Include="..\TrackId.Infrastructure\TrackId.Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Microsoft.EntityFrameworkCore.InMemory" />
+	  <None Remove="Blazorise.Bootstrap5" />
+	  <None Remove="Blazorise.Icons.FontAwesome" />
+	  <None Remove="Blazorise.Components" />
+	  <None Remove="Areas\Artist\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Areas\Artist\" />
+	</ItemGroup>
 </Project>

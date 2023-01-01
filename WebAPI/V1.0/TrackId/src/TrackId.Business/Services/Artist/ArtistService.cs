@@ -148,5 +148,26 @@ namespace TrackId.Business.Services
 
             return _mapper.Map<ArtistDto>(updatedResult);
         }
+
+        public async Task<IPaginatedList<ArtistDto>> GetByNameAsync(string name, int pageIndex, int pageSize, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return new PaginatedList<ArtistDto>();
+            }
+
+            var artistList = await _artistRepository.GetPaginatedListByConditionAsync(
+                art => art.Name.Contains(name),
+                x => x.OrderBy(o => o.CreateDateTime),
+                pageIndex,
+                pageSize);
+
+            if (artistList is null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<PaginatedList<ArtistDto>>(artistList);
+        }
     }
 }

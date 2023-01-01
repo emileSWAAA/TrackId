@@ -1,3 +1,6 @@
+using Blazorise;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -25,8 +28,13 @@ namespace Company.WebApplication1
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString")
                 ?? throw new InvalidOperationException("Connection string 'ConnectionString' not found.");
+            //builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer(connectionString));
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            {
+                options.UseInMemoryDatabase("TrackIdDb");
+            });
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddAutoMapper(typeof(TrackMapping));
 
@@ -48,8 +56,14 @@ namespace Company.WebApplication1
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddMediatR(typeof(BaseQueryResponse<>));
+            builder.Services
+    .AddBlazorise(options =>
+    {
+        options.Immediate = true;
+    })
+    .AddBootstrap5Providers()
+    .AddFontAwesomeIcons();
 
             var app = builder.Build();
 

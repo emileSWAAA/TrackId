@@ -8,6 +8,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -17,4 +18,7 @@
 		<ProjectReference Include="..\TrackId.Data\TrackId.Data.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Microsoft.EntityFrameworkCore.InMemory" />
+	</ItemGroup>
 </Project>

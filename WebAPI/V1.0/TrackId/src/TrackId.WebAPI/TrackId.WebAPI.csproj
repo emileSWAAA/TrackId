@@ -11,6 +11,7 @@
 		<EmbeddedResource Remove="Helpers\**" />
 		<None Remove="Helpers\**" />
 		<None Remove="MediatR.Extensions.Microsoft.DependencyInjection" />
+		<None Remove="Microsoft.EntityFrameworkCore.InMemory" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -34,6 +35,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.1" />
 	</ItemGroup>
 
 

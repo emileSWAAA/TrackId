@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TrackId.Business.Dto;
@@ -12,6 +13,8 @@ public interface IArtistService
     Task<ArtistDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     Task<ArtistDto> GetByNameAsync(string name, CancellationToken cancellationToken);
+
+    Task<IPaginatedList<ArtistDto>> GetByNameAsync(string name, int pageIndex, int pageSize, CancellationToken cancellationToken);
 
     Task<IPaginatedList<ArtistDto>> GetPagedListAsync(int pageIndex, int pageSize, CancellationToken cancellationToken);
 
