@@ -24,7 +24,7 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build TrackId.WebAPI.csproj --configuration Release
-        working-directory: /WebAPI/V1.0/TrackId/src/TrackId.WebAPI
+        working-directory: ${GITHUB_WORKSPACE}/WebAPI/V1.0/TrackId/src/TrackId.WebAPI
 
       - name: dotnet publish
         run: dotnet publish TrackId.WebAPI.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
