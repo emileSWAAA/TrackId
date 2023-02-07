@@ -33,6 +33,8 @@ namespace TrackId.WebAPI
         {
             var appSettings = new AppSettings();
             Configuration.Bind("AppSettings", appSettings);
+            
+            services.AddApplicationInsightsTelemetry();
             services.AddSingleton(appSettings);
 
             services.ConfigureServices(appSettings);
