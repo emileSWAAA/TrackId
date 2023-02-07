@@ -24,11 +24,9 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build TrackId.WebAPI.csproj --configuration Release
-        working-directory: TrackId/WebAPI/V1.0/TrackId/src/TrackId.WebAPI.csproj
 
       - name: dotnet publish
         run: dotnet publish TrackId.WebAPI.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
-        working-directory: TrackId/WebAPI/V1.0/TrackId/src/TrackId.WebAPI.csproj
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
