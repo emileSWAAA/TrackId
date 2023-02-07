@@ -6,25 +6,28 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using TrackId.Business.Services;
 using TrackId.Common.Constants;
-using TrackId.Contracts.Artist;
 using TrackId.Contracts.Artist.GetPaginated;
 using TrackId.Data.Wrappers;
 
 namespace TrackId.Application.Queries.Artist.Get
 {
+    public class GetArtistRequestQuery : IRequest<GetArtistQueryResult>
+    {
+        public int PageSize { get; set; }
+
+        public int PageIndex { get; set; }
+    }
+
     public class GetArtistRequestQueryHandler : IRequestHandler<GetArtistRequestQuery, GetArtistQueryResult>
     {
         private readonly IMapper _mapper;
-        private readonly ILogger<GetArtistRequestQueryHandler> _logger;
         private readonly IArtistService _artistService;
 
         public GetArtistRequestQueryHandler(
             IMapper mapper,
-            ILogger<GetArtistRequestQueryHandler> logger,
             IArtistService artistService)
         {
             _mapper = mapper;
-            _logger = logger;
             _artistService = artistService;
         }
 
@@ -36,17 +39,32 @@ namespace TrackId.Application.Queries.Artist.Get
             }
 
             var pagedList = await _artistService.GetPagedListAsync(request.PageIndex, request.PageSize, cancellationToken);
-            if (pagedList is null || !pagedList.Items.Any())
+            if (pagedList is null || pagedList.TotalCount == 0)
             {
                 return new GetArtistQueryResult(RequestErrorType.NotFound, "No artists found.");
             }
 
-            var response = new GetArtistPaginatedResponse()
+            var response = new GetArtistPaginatedResponse
             {
-                Result = _mapper.Map<PaginatedList<ArtistViewModel>>(pagedList)
+                Result = _mapper.Map<PaginatedList<ArtistResult>>(pagedList)
             };
 
             return new GetArtistQueryResult(response);
+        }
+    }
+
+    public class GetArtistQueryResult : BaseQueryResponse<GetArtistPaginatedResponse>
+    {
+        public GetArtistQueryResult(GetArtistPaginatedResponse result) : base(result)
+        {
+        }
+
+        public GetArtistQueryResult(RequestErrorType errorType, string errorMessage) : base(errorType, errorMessage)
+        {
+        }
+
+        public GetArtistQueryResult(bool success, RequestErrorType errorType, string errorMessage) : base(success, errorType, errorMessage)
+        {
         }
     }
 }

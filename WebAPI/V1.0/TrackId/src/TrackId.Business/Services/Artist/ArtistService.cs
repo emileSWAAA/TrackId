@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using TrackId.Business.Dto;
 using TrackId.Common.Constants;
 using TrackId.Data.Entities;
+using TrackId.Data.Interfaces;
 using TrackId.Data.Repositories;
 using TrackId.Data.Wrappers;
 
@@ -62,7 +63,7 @@ namespace TrackId.Business.Services
             return _mapper.Map<ArtistDto>(artist);
         }
 
-        public async Task<PaginatedList<ArtistDto>> GetPagedListAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
+        public async Task<IPaginatedList<ArtistDto>> GetPagedListAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
         {
             var artistList = await _artistRepository.GetPaginatedListByConditionAsync(null, x => x.OrderBy(o => o.CreateDateTime), pageIndex, pageSize);
             if (artistList is null)
@@ -82,13 +83,18 @@ namespace TrackId.Business.Services
             }
 
             var result = await _artistRepository.AddAsync(artistEnt, cancellationToken);
+            if (result is null)
+            {
+                return null;
+            }
+
             return _mapper.Map<ArtistDto>(result);
         }
 
         public async Task<bool> ExistsAsync(ArtistDto artist, CancellationToken cancellationToken)
         {
             if (artist.Id.Equals(ArtistConstants.TbaGuid) ||
-                artist.Name.Equals(ArtistConstants.TbaName, StringComparison.OrdinalIgnoreCase))
+                artist.Name.Equals(ArtistConstants.Name.Tba, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
@@ -141,6 +147,27 @@ namespace TrackId.Business.Services
             }
 
             return _mapper.Map<ArtistDto>(updatedResult);
+        }
+
+        public async Task<IPaginatedList<ArtistDto>> GetByNameAsync(string name, int pageIndex, int pageSize, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return new PaginatedList<ArtistDto>();
+            }
+
+            var artistList = await _artistRepository.GetPaginatedListByConditionAsync(
+                art => art.Name.Contains(name),
+                x => x.OrderBy(o => o.CreateDateTime),
+                pageIndex,
+                pageSize);
+
+            if (artistList is null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<PaginatedList<ArtistDto>>(artistList);
         }
     }
 }

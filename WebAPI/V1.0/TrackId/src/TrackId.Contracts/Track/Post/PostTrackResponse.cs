@@ -12,6 +12,8 @@ namespace TrackId.Contracts.Track
 
         public IEnumerable<Guid> Artists { get; set; }
 
+        public Guid? GenreId { get; set; }
+
         public TrackType Type { get; set; }
     }
 }

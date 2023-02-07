@@ -1,0 +1,22 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>TrackId.BlazorServer</PageTitle>
+
+<div id="wrapper">
+
+    <Sidebar />
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <NavMenu />
+            <div class="container-fluid">
+                @Body
+            </div>
+        </div>
+
+        <Footer />
+
+    </div>
+</div>
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>

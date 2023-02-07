@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,6 +12,13 @@ using TrackId.Contracts.Track.AddArtist;
 
 namespace TrackId.Application.Commands.Track.AddArtists
 {
+    public class AddArtistsCommand : IRequest<AddArtistsCommandResult>
+    {
+        public Guid TrackId { get; set; }
+
+        public IEnumerable<Guid> Artists { get; set; }
+    }
+
     public class AddArtistsCommandHandler : IRequestHandler<AddArtistsCommand, AddArtistsCommandResult>
     {
         private readonly ITrackService _trackService;
@@ -41,6 +49,21 @@ namespace TrackId.Application.Commands.Track.AddArtists
 
             var result = _mapper.Map<AddArtistsResponse>(trackDto);
             return new AddArtistsCommandResult(result);
+        }
+    }
+
+    public class AddArtistsCommandResult : BaseQueryResponse<AddArtistsResponse>
+    {
+        public AddArtistsCommandResult(AddArtistsResponse result) : base(result)
+        {
+        }
+
+        public AddArtistsCommandResult(RequestErrorType errorType, string errorMessage) : base(errorType, errorMessage)
+        {
+        }
+
+        public AddArtistsCommandResult(bool success, RequestErrorType errorType, string errorMessage) : base(success, errorType, errorMessage)
+        {
         }
     }
 }

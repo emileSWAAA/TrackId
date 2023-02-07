@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using TrackId.Application.Commands.Artist.Delete;
 using TrackId.Application.Commands.Artist.Post;
 using TrackId.Application.Commands.Artist.Put;
-using TrackId.Application.Commands.Track.Put;
 using TrackId.Application.Queries.Artist.Get;
 using TrackId.Application.Queries.Artist.GetById;
 using TrackId.Contracts.Artist;
@@ -25,27 +23,24 @@ namespace TrackId.WebAPI.Controllers
     public class ArtistController : BaseApiController
     {
         private readonly ILogger<ArtistController> _logger;
-        private readonly IMediator _mediator;
 
         public ArtistController(
             IMapper mapper,
             ILogger<ArtistController> logger,
-            IMediator mediator) : base(mapper)
+            IMediator mediator) : base(mapper, mediator)
         {
             _logger = logger;
-            _mediator = mediator;
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<GetByIdArtistResponse>> GetById(Guid id,
-            CancellationToken cancellationToken)
+        public async Task<ActionResult<GetByIdArtistResponse>> GetById(Guid id)
         {
             try
             {
-                var result = await _mediator.Send(new GetByIdArtistQuery()
+                var result = await Mediator.Send(new GetByIdArtistQuery
                 {
                     Id = id
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (!result.Success)
                 {
@@ -63,17 +58,16 @@ namespace TrackId.WebAPI.Controllers
 
         [HttpGet]
         public async Task<ActionResult<GetArtistPaginatedResponse>> GetAllPaginated(
-            CancellationToken cancellationToken,
-            int pageIndex = 0,
-            int pageSize = 20)
+            [FromQuery] int pageIndex = 0,
+            [FromQuery] int pageSize = 20)
         {
             try
             {
-                var result = await _mediator.Send(new GetArtistRequestQuery()
+                var result = await Mediator.Send(new GetArtistRequestQuery
                 {
                     PageIndex = pageIndex,
                     PageSize = pageSize
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (!result.Success)
                 {
@@ -92,15 +86,14 @@ namespace TrackId.WebAPI.Controllers
 
         [HttpPost]
         public async Task<ActionResult<PostArtistResponse>> Post(
-            [FromBody] PostArtistRequest request,
-            CancellationToken cancellationToken)
+            [FromBody] PostArtistRequest request)
         {
             try
             {
-                var result = await _mediator.Send(new PostArtistCommand
+                var result = await Mediator.Send(new PostArtistCommand
                 {
                     Request = request
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (!result.Success)
                 {
@@ -117,7 +110,7 @@ namespace TrackId.WebAPI.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
@@ -126,10 +119,10 @@ namespace TrackId.WebAPI.Controllers
                     return NotFound();
                 }
 
-                var result = await _mediator.Send(new DeleteArtistCommand()
+                var result = await Mediator.Send(new DeleteArtistCommand
                 {
                     Id = id
-                }, cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (!result.Success)
                 {
@@ -146,18 +139,16 @@ namespace TrackId.WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<PutTrackResponse>> Put([FromBody] PutArtistRequest request,
-            CancellationToken cancellationToken)
+        public async Task<ActionResult<PutTrackResponse>> Put([FromBody] PutArtistRequest request)
         {
             try
             {
-                var result = await _mediator.Send(new PutArtistCommand
+                var result = await Mediator.Send(new PutArtistCommand
                 {
                     Id = request.Id,
                     CountryCode = request.CountryCode,
                     Name = request.Name
-                },
-                    cancellationToken);
+                }, HttpContext.RequestAborted);
 
                 if (!result.Success)
                 {

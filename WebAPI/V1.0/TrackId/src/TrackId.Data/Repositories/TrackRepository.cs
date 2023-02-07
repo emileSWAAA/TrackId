@@ -5,8 +5,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TrackId.Common.Constants;
+using TrackId.Common.Helpers;
 using TrackId.Data.Entities;
 using TrackId.Data.Interfaces;
 using TrackId.Data.Wrappers;
@@ -17,14 +16,11 @@ namespace TrackId.Data.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly ILogger<TrackRepository> _logger;
 
         public TrackRepository(ApplicationDbContext dbContext,
-            ILogger<TrackRepository> logger,
             IDateTimeProvider dateTimeProvider)
         {
             _dbContext = dbContext;
-            _logger = logger;
             _dateTimeProvider = dateTimeProvider;
         }
 
@@ -34,12 +30,13 @@ namespace TrackId.Data.Repositories
             int pageIndex = 0,
             int pageSize = 20)
         {
-            if (pageSize > ApplicationConstants.MaxPageSize)
-            {
-                pageSize = ApplicationConstants.MaxPageSize;
-            }
+            pageSize = PaginatedListHelper.ParsePageSize(pageSize);
+            pageIndex = PaginatedListHelper.ParsePageIndex(pageIndex);
 
             var query = _dbContext.Tracks
+                .Include(tr => tr.Artists)
+                .ThenInclude(art => art.Artist)
+                .Include(tr => tr.Genre)
                 .AsNoTracking()
                 .Where(tr => tr.IsDeleted == false)
                 .AsQueryable();
@@ -51,14 +48,14 @@ namespace TrackId.Data.Repositories
 
             var totalCount = await query
                 .AsNoTracking()
-                .CountAsync();
+                .CountAsync(track => !track.IsDeleted);
 
             if (orderBy != null)
             {
                 query = orderBy(query);
             }
 
-            var skip = (pageIndex) * pageSize;
+            var skip = PaginatedListHelper.ParseSkip(pageIndex, pageSize);
             if (skip < 0)
             {
                 skip = 0;
@@ -74,7 +71,7 @@ namespace TrackId.Data.Repositories
                 totalCount,
                 pageIndex,
                 pageSize,
-                await query.ToListAsync());
+                query);
         }
 
         public async Task<Track> AddAsync(Track entity, CancellationToken cancellationToken)
@@ -109,6 +106,7 @@ namespace TrackId.Data.Repositories
             return await _dbContext.Tracks
                 .Include(tr => tr.Artists)
                 .ThenInclude(art => art.Artist)
+                .Include(tr => tr.Genre)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
         }
@@ -194,8 +192,8 @@ namespace TrackId.Data.Repositories
         {
             foreach (var artist in track.Artists)
             {
-                if (!track.Artists.Any(art => art.ArtistId.Equals(artist.ArtistId) &&
-                                              art.TrackId.Equals(track.Id)))
+                if (!artists.Any(art => art.ArtistId.Equals(artist.ArtistId) &&
+                                        art.TrackId.Equals(track.Id)))
                 {
                     _dbContext.Entry(artist).State = EntityState.Deleted;
                 }
@@ -212,17 +210,17 @@ namespace TrackId.Data.Repositories
                 }
 
                 existingArtist = CreateArtistTrack(artist.ArtistId, track.Id);
-                _dbContext.Entry(existingArtist).State = EntityState.Added;
+                track.Artists.Add(existingArtist);
             }
         }
 
-        private static ArtistTrack CreateArtistTrack(Guid artistId, Guid trackId)
+        private ArtistTrack CreateArtistTrack(Guid artistId, Guid trackId)
         {
-            return new ArtistTrack()
+            return new ArtistTrack
             {
                 ArtistId = artistId,
                 Id = Guid.NewGuid(),
-                CreateDateTime = DateTime.UtcNow,
+                CreateDateTime = _dateTimeProvider.UtcNow,
                 TrackId = trackId,
                 IsDeleted = false
             };

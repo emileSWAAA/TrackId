@@ -2,10 +2,24 @@
 {
     public static class ErrorConstants
     {
-        public const string Auth_PasswordsDoNotMatch = "Passwords do not match.";
-        public const string Auth_UnableToLogin = "Unable to login.";
-        public const string Auth_UserAlreadyExists = "User already exists.";
-        public const string Auth_CreatingAccountFailedByValidation = "Creating an account failed.";
-        public const string Auth_UserDoesNotExist = "User does not exist.";
+        public static class Auth
+        {
+            public const string PasswordsDoNotMatch = "Passwords do not match.";
+            public const string UnableToLogin = "Unable to login.";
+            public const string UserAlreadyExists = "User already exists.";
+            public const string CreatingAccountFailed = "Creating an account failed.";
+            public const string UserDoesNotExist = "User does not exist.";
+        }
+
+        public static class Genre
+        {
+            public const string InvalidParameters = "Invalid parameters.";
+            public const string NoGenresFound = "No genres found.";
+            public const string NotFound = "Genre not found.";
+            public const string NotCreated = "Could not create genre.";
+            public const string NotDeleted = "Could not delete genre.";
+        }
+
+        public const string GeneralError = "Unknown error occurred.";
     }
 }

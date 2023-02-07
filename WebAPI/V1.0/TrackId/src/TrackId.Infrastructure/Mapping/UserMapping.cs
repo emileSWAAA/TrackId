@@ -9,7 +9,7 @@ namespace TrackId.WebAPI.Mapping
     {
         public UserMapping()
         {
-            CreateMap<UserDto, AuthenticationResponse>()
+            CreateMap<UserDto, LoginResponse>()
                 .ForMember(dest => dest.Token, opt => opt.Ignore());
 
             CreateMap<ApplicationUser, UserDto>();

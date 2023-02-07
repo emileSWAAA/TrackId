@@ -43,6 +43,7 @@ namespace TrackId.WebAPI
                 options.LowercaseQueryStrings = true;
                 options.LowercaseUrls = true;
             });
+
             services.AddIdentityCore<ApplicationUser>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
@@ -54,7 +55,6 @@ namespace TrackId.WebAPI
                 .AddRoleStore<RoleStore<Role, ApplicationDbContext, Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
             var jwtOptions = appSettings.JwtTokenOptions;
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -64,7 +64,7 @@ namespace TrackId.WebAPI
                 {
                     opts.RequireHttpsMetadata = false;
                     opts.SaveToken = true;
-                    opts.TokenValidationParameters = new TokenValidationParameters()
+                    opts.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
@@ -77,7 +77,7 @@ namespace TrackId.WebAPI
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo() { Title = "TrackId API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TrackId API", Version = "v1" });
             });
 
             // TODO: Specify CORS policy

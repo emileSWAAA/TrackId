@@ -41,6 +41,7 @@ namespace TrackId.Infrastructure
             services.AddScoped<ITrackRepository, TrackRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IArtistRepository, ArtistRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
             return services;
@@ -51,6 +52,7 @@ namespace TrackId.Infrastructure
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITrackService, TrackService>();
             services.AddScoped<IArtistService, ArtistService>();
+            services.AddScoped<IGenreService, GenreService>();
 
             return services;
         }
@@ -60,7 +62,8 @@ namespace TrackId.Infrastructure
             services.AddScoped<IJwtTokenHelper, JwtTokenHelper>(serviceProvider =>
                 new JwtTokenHelper(tokenOptions,
                     serviceProvider.GetRequiredService<UserManager<ApplicationUser>>(),
-                    serviceProvider.GetRequiredService<IMapper>()));
+                    serviceProvider.GetRequiredService<IMapper>(),
+                    serviceProvider.GetRequiredService<IDateTimeProvider>()));
 
             return services;
         }

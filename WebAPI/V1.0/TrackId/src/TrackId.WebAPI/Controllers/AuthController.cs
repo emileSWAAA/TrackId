@@ -1,16 +1,18 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TrackId.Business.Dto;
-using TrackId.Business.Interfaces;
+using TrackId.Application.Commands.Auth.Login;
+using TrackId.Application.Commands.Auth.Register;
+using TrackId.Application.Queries;
 using TrackId.Common.Constants;
 using TrackId.Contracts.Models.User;
-using TrackId.Data.Entities;
 
 namespace TrackId.WebAPI.Controllers
 {
@@ -18,60 +20,48 @@ namespace TrackId.WebAPI.Controllers
     [ApiController]
     public class AuthController : BaseApiController
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<AuthController> _logger;
-        private readonly IJwtTokenHelper _jwtTokenHelper;
 
-        public AuthController(IMapper mapper, ILogger<AuthController> logger,
-            IJwtTokenHelper jwtTokenHelper, SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager)
-            : base(mapper)
+        public AuthController(
+            IMapper mapper,
+            ILogger<AuthController> logger,
+            IMediator mediator) : base(mapper, mediator)
         {
             _logger = logger;
-            _jwtTokenHelper = jwtTokenHelper;
-            _signInManager = signInManager;
-            _userManager = userManager;
         }
 
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<AuthenticationResponse>> Login([FromBody] AuthenticationRequest request)
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
         {
             try
             {
-                if (request == null || string.IsNullOrWhiteSpace(request.Email)
-                                    || string.IsNullOrWhiteSpace(request.Password))
+                if (request == null)
                 {
                     return BadRequest();
                 }
 
-                var user = await _userManager.FindByEmailAsync(request.Email);
-                if (user is null)
+                var result = await Mediator.Send(new LoginCommand
                 {
-                    return NotFound();
-                }
+                    Email = request.Email,
+                    Password = request.Password,
+                    RememberMe = request.RememberMe
+                }, HttpContext.RequestAborted);
 
-                var authResult = await _signInManager.PasswordSignInAsync(user, request.Password, isPersistent: false, lockoutOnFailure: false);
-                if (authResult is null || authResult.IsNotAllowed || authResult.IsLockedOut || !authResult.Succeeded)
+                if (result.Errors.Any(err => err.Type.Equals(RequestErrorType.Unauthorized)))
                 {
                     return Unauthorized();
                 }
 
-                var userDto = Mapper.Map<UserDto>(user);
-                if (userDto is null)
+                if (!result.Success)
                 {
-                    _logger.LogWarning($"Mapping of userId '{user.Id}' failed to map.");
-                    return BadRequest();
+                    return BadRequest(result.Errors);
                 }
 
-                var response = Mapper.Map<AuthenticationResponse>(userDto);
-                response.Token = await _jwtTokenHelper.CreateToken(userDto);
-
-                return response;
+                return Ok(result.Result);
             }
             catch (Exception ex)
             {
@@ -83,45 +73,30 @@ namespace TrackId.WebAPI.Controllers
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Register([FromBody] RegistrationRequest request)
         {
             try
             {
-                if (!request.Password.Equals(request.ConfirmPassword, StringComparison.InvariantCulture))
+                var result = await Mediator.Send(new RegisterCommand
                 {
-                    ModelState.AddModelError("passwordMatch", ErrorConstants.Auth_PasswordsDoNotMatch);
-                    return BadRequest(ModelState);
+                    Password = request.Password,
+                    ConfirmPassword = request.ConfirmPassword,
+                    Email = request.Email,
+                    Username = request.Email
+                }, HttpContext.RequestAborted);
+
+                if (result == null)
+                {
+                    return BadRequest(ErrorConstants.GeneralError);
                 }
 
-                var user = Mapper.Map<ApplicationUser>(request);
-                if (user is null)
+                if (!result.Success)
                 {
-                    _logger.LogWarning("Could not map user from request to DTO.");
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(result.Errors);
                 }
 
-                if (await _userManager.FindByEmailAsync(request.Email) is not null)
-                {
-                    ModelState.AddModelError("userExists", ErrorConstants.Auth_UserAlreadyExists);
-                    return BadRequest(ModelState);
-                }
-
-                var registrationResult = await _userManager.CreateAsync(user, request.Password);
-                if (!registrationResult.Succeeded)
-                {
-                    foreach (var error in registrationResult.Errors)
-                    {
-                        ModelState.AddModelError(error.Code, error.Description);
-                    }
-
-                    return BadRequest(ModelState);
-                }
-
-                await _userManager.AddToRoleAsync(user, RoleConstants.User);
-
-                return Ok(registrationResult);
+                return NoContent();
             }
             catch (Exception ex)
             {

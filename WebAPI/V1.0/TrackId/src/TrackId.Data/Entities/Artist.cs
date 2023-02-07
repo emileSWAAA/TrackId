@@ -4,7 +4,7 @@ using TrackId.Common.Interfaces;
 
 namespace TrackId.Data.Entities
 {
-    public class Artist : BaseEntity, IValidated, ICreateDateTime, ISoftDeletable
+    public class Artist : BaseEntity, ICreateDateTime, ISoftDeletable
     {
         public string Name { get; set; }
 

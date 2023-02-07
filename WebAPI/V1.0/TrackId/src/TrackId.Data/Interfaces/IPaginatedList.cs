@@ -4,7 +4,7 @@ namespace TrackId.Data.Interfaces
 {
     public interface IPaginatedList<T>
     {
-        IList<T> Items { get; set; }
+        IEnumerable<T> Items { get; set; }
 
         int PageSize { get; }
 

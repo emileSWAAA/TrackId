@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30621.155
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackId.WebAPI", "src\TrackId.WebAPI\TrackId.WebAPI.csproj", "{7AD68B4A-D539-4712-B1D8-3657B4AA4FEA}"
 EndProject
@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackId.Infrastructure", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackId.Contracts", "src\TrackId.Contracts\TrackId.Contracts.csproj", "{5050270B-A24A-4C26-99BB-18153DCDB19D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackId.Application", "src\TrackId.Application\TrackId.Application.csproj", "{85DFD34B-6C65-4EF9-B2F8-E0416DD582FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrackId.Application", "src\TrackId.Application\TrackId.Application.csproj", "{85DFD34B-6C65-4EF9-B2F8-E0416DD582FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackId.Client", "src\TrackId.Client\TrackId.Client.csproj", "{74ECFEBF-7AD4-4341-8B26-53085352D6FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{85DFD34B-6C65-4EF9-B2F8-E0416DD582FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85DFD34B-6C65-4EF9-B2F8-E0416DD582FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85DFD34B-6C65-4EF9-B2F8-E0416DD582FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74ECFEBF-7AD4-4341-8B26-53085352D6FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74ECFEBF-7AD4-4341-8B26-53085352D6FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74ECFEBF-7AD4-4341-8B26-53085352D6FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74ECFEBF-7AD4-4341-8B26-53085352D6FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{4DDD4E3F-6D01-421F-8CCB-EA723409F507} = {F5A60912-FD3E-424F-8CD3-DD73EBAEB921}
 		{5050270B-A24A-4C26-99BB-18153DCDB19D} = {F5A60912-FD3E-424F-8CD3-DD73EBAEB921}
 		{85DFD34B-6C65-4EF9-B2F8-E0416DD582FF} = {F5A60912-FD3E-424F-8CD3-DD73EBAEB921}
+		{74ECFEBF-7AD4-4341-8B26-53085352D6FE} = {F5A60912-FD3E-424F-8CD3-DD73EBAEB921}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8655F868-11E2-4EC6-AEEA-C09474C2725B}

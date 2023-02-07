@@ -108,7 +108,7 @@ namespace TrackId.Business.Services
 
         public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            if (!await _trackRepository.ExistsAsync(x => x.Id.Equals(id), cancellationToken))
+            if (!await _trackRepository.ExistsAsync(track => track.Id.Equals(id), cancellationToken))
             {
                 return false;
             }
