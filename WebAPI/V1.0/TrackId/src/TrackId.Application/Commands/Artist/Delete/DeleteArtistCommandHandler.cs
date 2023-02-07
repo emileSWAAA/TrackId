@@ -10,6 +10,12 @@ using TrackId.Contracts.Artist.Delete;
 
 namespace TrackId.Application.Commands.Artist.Delete
 {
+    public class DeleteArtistCommand : IRequest<DeleteArtistCommandResult>
+    {
+        public Guid Id { get; set; }
+    }
+
+
     public class DeleteArtistCommandHandler : IRequestHandler<DeleteArtistCommand, DeleteArtistCommandResult>
     {
         private readonly IArtistService _artistService;
@@ -26,18 +32,27 @@ namespace TrackId.Application.Commands.Artist.Delete
                 return new DeleteArtistCommandResult(RequestErrorType.ValidationError, "Invalid parameters.");
             }
 
-            if (await _artistService.GetByIdAsync(request.Id, cancellationToken) is not ArtistDto artist)
-            {
-                return new DeleteArtistCommandResult(RequestErrorType.NotFound, "Cannot delete non-existing artist.");
-            }
-
-            var result = await _artistService.DeleteAsync(request.Id, cancellationToken);
-            if (!result)
+            if (!await _artistService.DeleteAsync(request.Id, cancellationToken))
             {
                 return new DeleteArtistCommandResult(RequestErrorType.NotCreated, "Unable to delete artist.");
             }
 
             return new DeleteArtistCommandResult(new DeleteArtistResponse());
+        }
+    }
+
+    public class DeleteArtistCommandResult : BaseQueryResponse<DeleteArtistResponse>
+    {
+        public DeleteArtistCommandResult(DeleteArtistResponse result) : base(result)
+        {
+        }
+
+        public DeleteArtistCommandResult(RequestErrorType errorType, string errorMessage) : base(errorType, errorMessage)
+        {
+        }
+
+        public DeleteArtistCommandResult(bool success, RequestErrorType errorType, string errorMessage) : base(success, errorType, errorMessage)
+        {
         }
     }
 }

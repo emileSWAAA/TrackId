@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using TrackId.Contracts.Track;
+
+namespace TrackId.Contracts.Genre.GetById
+{
+    public class GetGenreByIdWithTracksResponse : IResponseContract
+    {
+        public Guid Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public ParentGenreViewModel ParentGenre { get; set; }
+
+        public IEnumerable<TrackViewModel> Tracks { get; set; }
+    }
+}

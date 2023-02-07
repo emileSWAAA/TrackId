@@ -9,6 +9,11 @@ using TrackId.Contracts.Track.Delete;
 
 namespace TrackId.Application.Commands.Track.Delete
 {
+    public class DeleteTrackCommand : IRequest<DeleteTrackCommandResult>
+    {
+        public Guid Id { get; set; }
+    }
+
     public class DeleteTrackCommandHandler : IRequestHandler<DeleteTrackCommand, DeleteTrackCommandResult>
     {
         private readonly ITrackService _trackService;
@@ -25,18 +30,27 @@ namespace TrackId.Application.Commands.Track.Delete
                 return new DeleteTrackCommandResult(RequestErrorType.ValidationError, "Invalid parameters.");
             }
 
-            if (await _trackService.GetByIdAsync(request.Id, cancellationToken) is not TrackDto track)
-            {
-                return new DeleteTrackCommandResult(RequestErrorType.NotFound, "Cannot delete non-existing track.");
-            }
-
-            var result = await _trackService.DeleteAsync(request.Id, cancellationToken);
-            if (!result)
+            if (!await _trackService.DeleteAsync(request.Id, cancellationToken))
             {
                 return new DeleteTrackCommandResult(RequestErrorType.NotCreated, "Unable to delete track.");
             }
 
             return new DeleteTrackCommandResult(new DeleteTrackResponse());
+        }
+    }
+
+    public class DeleteTrackCommandResult : BaseQueryResponse<DeleteTrackResponse>
+    {
+        public DeleteTrackCommandResult(DeleteTrackResponse result) : base(result)
+        {
+        }
+
+        public DeleteTrackCommandResult(RequestErrorType errorType, string errorMessage) : base(errorType, errorMessage)
+        {
+        }
+
+        public DeleteTrackCommandResult(bool success, RequestErrorType errorType, string errorMessage) : base(success, errorType, errorMessage)
+        {
         }
     }
 }

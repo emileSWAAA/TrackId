@@ -1,6 +1,7 @@
 ﻿namespace TrackId.Contracts.Models.User
 {
-    public class RegistrationResponse
+    public class RegistrationResponse : IResponseContract
     {
+
     }
 }

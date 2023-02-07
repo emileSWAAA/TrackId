@@ -13,11 +13,11 @@ namespace TrackId.Data
             : base(options) { }
 
         public virtual DbSet<Track> Tracks { get; set; }
-
         public virtual DbSet<Artist> Artists { get; set; }
-
         public virtual DbSet<ArtistTrack> ArtistTracks { get; set; }
-
+        public virtual DbSet<Genre> Genres { get; set; }
+        public virtual DbSet<TrackSource> TrackSources { get; set; }
+        public virtual DbSet<TrackSourceType> TrackSourceTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +27,8 @@ namespace TrackId.Data
             SeedUsers(modelBuilder);
             SeedUserRoles(modelBuilder);
             SeedTbaArtist(modelBuilder);
+            SeedGenres(modelBuilder);
+            BuildTrackSources(modelBuilder);
 
             modelBuilder.Entity<ArtistTrack>()
                 .HasOne(x => x.Artist)
@@ -49,9 +51,37 @@ namespace TrackId.Data
             });
         }
 
-        private void SeedUsers(ModelBuilder modelBuilder)
+        private static void BuildTrackSources(ModelBuilder modelBuilder)
         {
-            var user = new ApplicationUser()
+            modelBuilder.Entity<TrackSource>().HasKey(ts => ts.Id);
+            modelBuilder.Entity<TrackSource>().Property(ts => ts.StreamSlug).IsRequired().HasMaxLength(155);
+            modelBuilder.Entity<TrackSource>().Property(ts => ts.IsBrokenLink).IsRequired();
+            modelBuilder.Entity<TrackSource>()
+                .HasOne(ts => ts.Track)
+                .WithMany(tr => tr.TrackSources)
+                .HasForeignKey(ts => ts.TrackId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TrackSource>()
+                .HasOne(ts => ts.TrackSourceType)
+                .WithOne()
+                .HasForeignKey<TrackSourceType>(tt => tt.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        private static void BuildTrackSourceTypes(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TrackSourceType>().HasKey(tt => tt.Id);
+            modelBuilder.Entity<TrackSourceType>().Property(tt => tt.EmbeddedUrl).IsRequired();
+            modelBuilder.Entity<TrackSourceType>().Property(tt => tt.Version)
+                .HasDefaultValue(ApplicationConstants.TrackSourceType.DefaultVersion).IsRequired();
+            modelBuilder.Entity<TrackSourceType>().Property(tt => tt.Name).IsRequired().HasMaxLength(75);
+
+        }
+
+        private static void SeedUsers(ModelBuilder modelBuilder)
+        {
+            var user = new ApplicationUser
             {
                 Id = Guid.Parse("8A24BFA9-26FE-4BD1-9D84-AB2A83D6F2FB"),
                 UserName = "Admin",
@@ -59,7 +89,8 @@ namespace TrackId.Data
                 LockoutEnabled = false,
                 NormalizedEmail = "emileverbunt@gmail.com",
                 NormalizedUserName = "admin",
-                CreateDateTime = DateTime.UtcNow
+                CreateDateTime = DateTime.UtcNow,
+                SecurityStamp = Guid.NewGuid().ToString()
             };
 
             var passwordHasher = new PasswordHasher<ApplicationUser>();
@@ -68,34 +99,65 @@ namespace TrackId.Data
             modelBuilder.Entity<ApplicationUser>().HasData(user);
         }
 
-        private void SeedRoles(ModelBuilder modelBuilder)
+        private static void SeedRoles(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Role>().HasData(
-                new Role() { Id = Guid.Parse("B3E78BD1-5FA8-4DD9-AC80-19063DBC82E1"), Name = "admin", NormalizedName = "Admin" },
-                new Role() { Id = Guid.Parse("BBA64C5F-A693-4F88-96A3-7207018BC14E"), Name = "user", NormalizedName = "User" },
-                new Role() { Id = Guid.Parse("F8DBB603-A0F4-4B38-A1D6-CCB370D58586"), Name = "artist", NormalizedName = "Artist" }
+                new Role { Id = Guid.Parse("B3E78BD1-5FA8-4DD9-AC80-19063DBC82E1"), Name = "admin", NormalizedName = "Admin" },
+                new Role { Id = Guid.Parse("BBA64C5F-A693-4F88-96A3-7207018BC14E"), Name = "user", NormalizedName = "User" },
+                new Role { Id = Guid.Parse("F8DBB603-A0F4-4B38-A1D6-CCB370D58586"), Name = "artist", NormalizedName = "Artist" }
             );
         }
 
-        private void SeedUserRoles(ModelBuilder modelBuilder)
+        private static void SeedUserRoles(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserRole>()
-                .HasData(new UserRole()
+                .HasData(new UserRole
                 {
                     RoleId = Guid.Parse("B3E78BD1-5FA8-4DD9-AC80-19063DBC82E1"),
                     UserId = Guid.Parse("8A24BFA9-26FE-4BD1-9D84-AB2A83D6F2FB")
                 });
         }
 
-        private void SeedTbaArtist(ModelBuilder modelBuilder)
+        private static void SeedTbaArtist(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Artist>()
-                .HasData(new Artist()
+                .HasData(new Artist
                 {
                     Id = ArtistConstants.TbaGuid,
-                    Name = ArtistConstants.TbaName,
+                    Name = ArtistConstants.Name.Tba,
                     CreateDateTime = DateTime.UtcNow,
                     IsDeleted = false,
+                });
+        }
+
+        private static void SeedGenres(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Genre>()
+                .HasData(new Genre[]
+                {
+                    new Genre
+                    {
+                        Name = "Hardstyle",
+                        Id = Guid.Parse("2443687E-B3E6-49AA-87EC-4AD9E7EAE6BD"),
+                        ParentGenreId = Guid.Parse("1AF4AF53-05A4-4934-B8B1-758D9750F8D9"),
+                        Description = "Hardstyle",
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    new Genre
+                    {
+                        Name = "Raw hardstyle",
+                        Id = Guid.Parse("FAC53697-439F-48FD-9050-832A981ADF2C"),
+                        ParentGenreId = Guid.Parse("2443687E-B3E6-49AA-87EC-4AD9E7EAE6BD"),
+                        Description = "Hardstyle",
+                        CreateDateTime = DateTime.UtcNow
+                    },
+                    new Genre
+                    {
+                        Name = "EDM",
+                        Id = Guid.Parse("1AF4AF53-05A4-4934-B8B1-758D9750F8D9"),
+                        Description = "Electronic dance music",
+                        CreateDateTime = DateTime.UtcNow
+                    },
                 });
         }
     }

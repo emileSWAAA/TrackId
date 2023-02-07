@@ -10,6 +10,11 @@ using TrackId.Contracts.Artist;
 
 namespace TrackId.Application.Queries.Artist.GetById
 {
+    public class GetByIdArtistQuery : IRequest<GetByIdArtistQueryResult>
+    {
+        public Guid Id { get; set; }
+    }
+
     public class GetByIdArtistQueryHandler : IRequestHandler<GetByIdArtistQuery, GetByIdArtistQueryResult>
     {
         private readonly IMapper _mapper;
@@ -29,7 +34,6 @@ namespace TrackId.Application.Queries.Artist.GetById
         public async Task<GetByIdArtistQueryResult> Handle(GetByIdArtistQuery request, CancellationToken cancellationToken)
         {
             var id = request.Id;
-
             if (id.Equals(Guid.Empty))
             {
                 return new GetByIdArtistQueryResult(RequestErrorType.ValidationError, "Forbidden guid.");
@@ -47,6 +51,21 @@ namespace TrackId.Application.Queries.Artist.GetById
             }
 
             return new GetByIdArtistQueryResult(response);
+        }
+    }
+
+    public class GetByIdArtistQueryResult : BaseQueryResponse<GetByIdArtistResponse>
+    {
+        public GetByIdArtistQueryResult(GetByIdArtistResponse result) : base(result)
+        {
+        }
+
+        public GetByIdArtistQueryResult(RequestErrorType errorType, string errorMessage) : base(errorType, errorMessage)
+        {
+        }
+
+        public GetByIdArtistQueryResult(bool success, RequestErrorType errorType, string errorMessage) : base(success, errorType, errorMessage)
+        {
         }
     }
 }

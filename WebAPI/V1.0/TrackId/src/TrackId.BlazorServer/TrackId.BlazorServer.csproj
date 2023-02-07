@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>aspnet-TrackId.BlazorServer-D0823287-53F2-4AF9-831B-7849E1B9C51F</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.1">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.1" />
+		<PackageReference Include="Blazorise.Bootstrap5" Version="1.1.5" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.1.5" />
+		<PackageReference Include="Blazorise.Components" Version="1.1.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\TrackId.Application\TrackId.Application.csproj" />
+		<ProjectReference Include="..\TrackId.Business\TrackId.Business.csproj" />
+		<ProjectReference Include="..\TrackId.Data\TrackId.Data.csproj" />
+		<ProjectReference Include="..\TrackId.Infrastructure\TrackId.Infrastructure.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Microsoft.EntityFrameworkCore.InMemory" />
+	  <None Remove="Blazorise.Bootstrap5" />
+	  <None Remove="Blazorise.Icons.FontAwesome" />
+	  <None Remove="Blazorise.Components" />
+	  <None Remove="Areas\Artist\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Areas\Artist\" />
+	</ItemGroup>
+</Project>

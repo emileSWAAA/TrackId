@@ -10,6 +10,11 @@ using TrackId.Business.Dto;
 
 namespace TrackId.Application.Queries.Track
 {
+    public class GetByIdTrackRequestQuery : IRequest<GetByIdTrackQueryResult>
+    {
+        public Guid Id { get; set; }
+    }
+
     public class GetByIdTrackRequestQueryHandler : IRequestHandler<GetByIdTrackRequestQuery, GetByIdTrackQueryResult>
     {
         private readonly ITrackService _trackService;
@@ -50,6 +55,19 @@ namespace TrackId.Application.Queries.Track
             }
 
             return new GetByIdTrackQueryResult(response);
+        }
+    }
+
+    public class GetByIdTrackQueryResult : BaseQueryResponse<GetByIdTrackResponse>
+    {
+        public GetByIdTrackQueryResult(GetByIdTrackResponse result)
+            : base(result)
+        {
+        }
+
+        public GetByIdTrackQueryResult(bool success, RequestErrorType errorType, string errorMessage)
+            : base(success, errorType, errorMessage)
+        {
         }
     }
 }

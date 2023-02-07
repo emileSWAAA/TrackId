@@ -2,7 +2,9 @@
 using AutoMapper;
 using TrackId.Business.Dto;
 using TrackId.Contracts.Artist;
+using TrackId.Contracts.Artist.GetPaginated;
 using TrackId.Contracts.Artist.Post;
+using TrackId.Contracts.Track;
 using TrackId.Data.Entities;
 using TrackId.Data.Wrappers;
 
@@ -19,6 +21,9 @@ namespace TrackId.Infrastructure.Mapping
                 .ForMember(art => art.Tracks, opt => opt.MapFrom(src => src.Tracks.Select(s => s)));
 
             CreateMap<ArtistDto, ArtistViewModel>();
+            CreateMap<ArtistDto, ArtistResult>()
+                .ForMember(dest => dest.Tracks, opt => opt.MapFrom(src => src.Tracks))
+                .ForMember(dest => dest.Artist, opt => opt.MapFrom(src => src));
 
             CreateMap<ArtistDto, PostArtistResponse>();
             CreateMap<PostArtistRequest, ArtistDto>()
@@ -33,7 +38,7 @@ namespace TrackId.Infrastructure.Mapping
                 .ForCtorParam("pageIndex", opt => opt.MapFrom(src => src.PageIndex))
                 .ForCtorParam("pageSize", opt => opt.MapFrom(src => src.PageSize));
 
-            CreateMap<PaginatedList<ArtistDto>, PaginatedList<ArtistViewModel>>()
+            CreateMap<PaginatedList<ArtistDto>, PaginatedList<ArtistResult>>()
                 .ForCtorParam("items", opt => opt.MapFrom(src => src.Items))
                 .ForCtorParam("totalCount", opt => opt.MapFrom(src => src.TotalCount))
                 .ForCtorParam("pageIndex", opt => opt.MapFrom(src => src.PageIndex))

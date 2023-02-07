@@ -1,0 +1,10 @@
+﻿@page "/artists"
+
+@inherits ArtistIndexBase
+
+<h1>Artists</h1>
+
+@foreach(var artist in Artists)
+{
+        <p>@artist.Name - @artist.CountryCode</p>
+}

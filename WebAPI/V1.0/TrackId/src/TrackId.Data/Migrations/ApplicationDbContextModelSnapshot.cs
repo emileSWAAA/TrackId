@@ -235,14 +235,14 @@ namespace TrackId.Data.Migrations
                         {
                             Id = new Guid("8a24bfa9-26fe-4bd1-9d84-ab2a83d6f2fb"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d1c8c309-d062-4525-bf1c-439176a3930a",
-                            CreateDateTime = new DateTime(2021, 10, 17, 18, 47, 17, 153, DateTimeKind.Utc).AddTicks(3368),
+                            ConcurrencyStamp = "899b4df6-bff5-47f1-bff9-30a101d652ce",
+                            CreateDateTime = new DateTime(2022, 3, 29, 13, 0, 11, 252, DateTimeKind.Utc).AddTicks(542),
                             Email = "emileverbunt@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "emileverbunt@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMwb4nz0pl4OWhyOVrcSABAOC6mB037v5W2CqxHNAePYWzXQXcrosE40/u61WK8DhA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEP4+W1cvPKydT8PsRkRDSrXTnVEBU5eDh1LDxbOikprw8fuh+Ci+Ex8/xgKSCu4GfQ==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "Admin"
@@ -278,7 +278,7 @@ namespace TrackId.Data.Migrations
                         new
                         {
                             Id = new Guid("69532b21-3b21-4a16-9a13-efe69f109cca"),
-                            CreateDateTime = new DateTime(2021, 10, 17, 18, 47, 17, 158, DateTimeKind.Utc).AddTicks(8533),
+                            CreateDateTime = new DateTime(2022, 3, 29, 13, 0, 11, 279, DateTimeKind.Utc).AddTicks(6595),
                             IsDeleted = false,
                             IsValidated = false,
                             Name = "TBA"
@@ -315,6 +315,69 @@ namespace TrackId.Data.Migrations
                     b.ToTable("ArtistTracks");
                 });
 
+            modelBuilder.Entity("TrackId.Data.Entities.Genre", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeleteDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .HasColumnType("nvarchar(75)");
+
+                    b.Property<Guid?>("ParentGenreId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentGenreId");
+
+                    b.ToTable("Genres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("2443687e-b3e6-49aa-87ec-4ad9e7eae6bd"),
+                            CreateDateTime = new DateTime(2022, 3, 29, 13, 0, 11, 280, DateTimeKind.Utc).AddTicks(2385),
+                            Description = "Hardstyle",
+                            IsDeleted = false,
+                            Name = "Hardstyle",
+                            ParentGenreId = new Guid("1af4af53-05a4-4934-b8b1-758d9750f8d9")
+                        },
+                        new
+                        {
+                            Id = new Guid("fac53697-439f-48fd-9050-832a981adf2c"),
+                            CreateDateTime = new DateTime(2022, 3, 29, 13, 0, 11, 280, DateTimeKind.Utc).AddTicks(2702),
+                            Description = "Hardstyle",
+                            IsDeleted = false,
+                            Name = "Raw hardstyle",
+                            ParentGenreId = new Guid("2443687e-b3e6-49aa-87ec-4ad9e7eae6bd")
+                        },
+                        new
+                        {
+                            Id = new Guid("1af4af53-05a4-4934-b8b1-758d9750f8d9"),
+                            CreateDateTime = new DateTime(2022, 3, 29, 13, 0, 11, 280, DateTimeKind.Utc).AddTicks(2704),
+                            Description = "Electronic dance music",
+                            IsDeleted = false,
+                            Name = "EDM"
+                        });
+                });
+
             modelBuilder.Entity("TrackId.Data.Entities.Track", b =>
                 {
                     b.Property<Guid>("Id")
@@ -327,6 +390,9 @@ namespace TrackId.Data.Migrations
                     b.Property<DateTime?>("DeleteDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("GenreId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -338,7 +404,64 @@ namespace TrackId.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GenreId");
+
                     b.ToTable("Tracks");
+                });
+
+            modelBuilder.Entity("TrackId.Data.Entities.TrackSource", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsBrokenLink")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("StreamSlug")
+                        .IsRequired()
+                        .HasMaxLength(155)
+                        .HasColumnType("nvarchar(155)");
+
+                    b.Property<Guid>("TrackId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TrackSourceTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrackId");
+
+                    b.ToTable("TrackSources");
+                });
+
+            modelBuilder.Entity("TrackId.Data.Entities.TrackSourceType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EmbeddedUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Version")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TrackSourceTypes");
                 });
 
             modelBuilder.Entity("TrackId.Data.Entities.Role", b =>
@@ -351,21 +474,21 @@ namespace TrackId.Data.Migrations
                         new
                         {
                             Id = new Guid("b3e78bd1-5fa8-4dd9-ac80-19063dbc82e1"),
-                            ConcurrencyStamp = "f24959ab-8a77-46cb-89fc-1018ea07610b",
+                            ConcurrencyStamp = "1eca591a-2b58-4e38-8a63-928383077091",
                             Name = "admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
                             Id = new Guid("bba64c5f-a693-4f88-96a3-7207018bc14e"),
-                            ConcurrencyStamp = "ab92ee8c-c351-4d53-a357-e6e79c699b54",
+                            ConcurrencyStamp = "02a8ffc2-37cf-48b4-9251-5c24977a2760",
                             Name = "user",
                             NormalizedName = "User"
                         },
                         new
                         {
                             Id = new Guid("f8dbb603-a0f4-4b38-a1d6-ccb370d58586"),
-                            ConcurrencyStamp = "846c1053-1081-4acd-a197-829655054848",
+                            ConcurrencyStamp = "eda8cabb-387d-4fad-90b4-c159f0c9d806",
                             Name = "artist",
                             NormalizedName = "Artist"
                         });
@@ -455,7 +578,50 @@ namespace TrackId.Data.Migrations
                     b.Navigation("Track");
                 });
 
+            modelBuilder.Entity("TrackId.Data.Entities.Genre", b =>
+                {
+                    b.HasOne("TrackId.Data.Entities.Genre", "ParentGenre")
+                        .WithMany()
+                        .HasForeignKey("ParentGenreId");
+
+                    b.Navigation("ParentGenre");
+                });
+
+            modelBuilder.Entity("TrackId.Data.Entities.Track", b =>
+                {
+                    b.HasOne("TrackId.Data.Entities.Genre", "Genre")
+                        .WithMany("Tracks")
+                        .HasForeignKey("GenreId");
+
+                    b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("TrackId.Data.Entities.TrackSource", b =>
+                {
+                    b.HasOne("TrackId.Data.Entities.Track", "Track")
+                        .WithMany("TrackSources")
+                        .HasForeignKey("TrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Track");
+                });
+
+            modelBuilder.Entity("TrackId.Data.Entities.TrackSourceType", b =>
+                {
+                    b.HasOne("TrackId.Data.Entities.TrackSource", null)
+                        .WithOne("TrackSourceType")
+                        .HasForeignKey("TrackId.Data.Entities.TrackSourceType", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TrackId.Data.Entities.Artist", b =>
+                {
+                    b.Navigation("Tracks");
+                });
+
+            modelBuilder.Entity("TrackId.Data.Entities.Genre", b =>
                 {
                     b.Navigation("Tracks");
                 });
@@ -463,6 +629,13 @@ namespace TrackId.Data.Migrations
             modelBuilder.Entity("TrackId.Data.Entities.Track", b =>
                 {
                     b.Navigation("Artists");
+
+                    b.Navigation("TrackSources");
+                });
+
+            modelBuilder.Entity("TrackId.Data.Entities.TrackSource", b =>
+                {
+                    b.Navigation("TrackSourceType");
                 });
 #pragma warning restore 612, 618
         }
