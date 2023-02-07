@@ -23,10 +23,12 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build TrackId\WebAPI\V1.0\TrackId\TrackId.WebAPI.csproj --configuration Release
+        run: dotnet build TrackId.WebAPI.csproj --configuration Release
+        working-directory: TrackId/WebAPI/V1.0T/rackId/TrackId.WebAPI.csproj
 
       - name: dotnet publish
-        run: dotnet publish TrackId\WebAPI\V1.0\TrackId\TrackId.WebAPI.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish TrackId.WebAPI.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        working-directory: TrackId/WebAPI/V1.0T/rackId/TrackId.WebAPI.csproj
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
