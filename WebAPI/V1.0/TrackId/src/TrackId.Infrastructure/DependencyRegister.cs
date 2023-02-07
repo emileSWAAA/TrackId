@@ -34,14 +34,10 @@ namespace TrackId.Infrastructure
 
         private static IServiceCollection ConfigureData(this IServiceCollection services, AppSettings appSettings)
         {
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //     options.UseSqlServer(appSettings.ConnectionString,
-            //         b => b.MigrationsAssembly("TrackId.Data")));
-
             services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("TrackIdDb");
-            });
+                 options.UseSqlServer(appSettings.ConnectionString,
+                     b => b.MigrationsAssembly("TrackId.Data")));
+
             services.AddScoped<ITrackRepository, TrackRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IArtistRepository, ArtistRepository>();
