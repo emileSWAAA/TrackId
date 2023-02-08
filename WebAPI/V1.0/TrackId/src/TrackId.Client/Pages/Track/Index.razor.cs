@@ -24,7 +24,7 @@ namespace TrackId.Client.Pages.Track
         {
             try
             {
-                var result = await _httpClient.GetFromJsonAsync<GetTrackPaginatedResponse>($"/api/track?pageIndex={PageIndex}&pageSize={PageSize}");
+                var result = await _httpClient.GetFromJsonAsync<GetTrackPaginatedResponse>($"/track?pageIndex={PageIndex}&pageSize={PageSize}");
                 if(result is not null)
                 {
                     return result;

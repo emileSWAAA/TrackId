@@ -8,5 +8,8 @@
 }
 else
 {
-    
+    @foreach(var item in Tracks.Result.Items)
+    {
+        <p>@item.Track.Title</p>
+    }
 }
